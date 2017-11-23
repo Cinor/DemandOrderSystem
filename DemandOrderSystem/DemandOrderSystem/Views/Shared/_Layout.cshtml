@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - 我的 ASP.NET 應用程式</title>
+    <title>@ViewBag.Title - 需求單報表系統</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
@@ -18,13 +18,19 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("應用程式名稱", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("需求單報表系統", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("首頁", "Index", "Home")</li>
-                    <li>@Html.ActionLink("關於", "About", "Home")</li>
-                    <li>@Html.ActionLink("連絡方式", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("0","TableAll","Order")</li>
+                    <li>@Html.ActionLink("1", "TableOne", "Order")</li>
+                    <li>@Html.ActionLink("2", "TableTwo", "Order")</li>
+                    <li>@Html.ActionLink("3", "TableThree", "Order")</li>
+                    <li>@Html.ActionLink("4", "TableFour", "Order")</li>
+                    <li>@Html.ActionLink("5", "TableFive", "Order")</li>
+                    <li>@Html.ActionLink("6", "TableSix", "Order")</li>
+                    <li>@Html.ActionLink("7", "TableSeven", "Order")</li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
@@ -34,7 +40,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - 我的 ASP.NET 應用程式</p>
+            <p>&copy; @DateTime.Now.Year - 需求單報表系統</p>
         </footer>
     </div>
 
