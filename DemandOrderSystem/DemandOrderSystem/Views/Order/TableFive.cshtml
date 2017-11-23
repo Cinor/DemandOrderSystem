@@ -1,0 +1,64 @@
+﻿@model DemandOrderSystem.Models.ViewModel.TableFiveViewModel
+
+@{
+    ViewBag.Title = "未結案且未回覆預估完成日件數統計及明細表";
+}
+
+<h2>未結案且未回覆預估完成日件數統計及明細表</h2>
+
+
+@using (Html.BeginForm("TableFive", "Order", FormMethod.Get))
+{
+    <div class="form-horizontal">
+        <hr />
+        <div class="form-group">
+            @Html.Label("受理狀態選擇: ")@Html.DropDownList("condition", null, "", new { @class = "form-control" })
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="查詢" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<table class="table table-bordered" style="width:auto;overflow: auto">
+    <tr>
+        <th>資訊部室</th>
+        <th>維護專案</th>
+        <th>受理人</th>
+        <th>合計</th>
+    </tr>
+
+    @{int sum = 0; }
+    @foreach (var item in Model.table)
+    {
+
+        sum += item.sum;
+        foreach (var item2 in item.tableByDept)
+        {
+            <tr>
+                <td>@item.information_department</td>
+                <td>@item2.work_line</td>
+                <td>@item2.demand_principal</td>
+                <td>@item2.amount</td>
+            </tr>
+        }
+        <tr>
+            <td>@item.information_department 合計</td>
+            <td></td>
+            <td></td>
+            <td>@item.sum</td>
+        </tr>
+
+    }
+    <tr>
+        <td>總計</td>
+        <td></td>
+        <td></td>
+        <td>@sum</td>
+    </tr>
+</table>
+
