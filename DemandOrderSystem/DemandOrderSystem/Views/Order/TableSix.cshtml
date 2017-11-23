@@ -1,0 +1,101 @@
+﻿@model SingleProject.ViewModels.Class6
+
+@{
+    ViewBag.Title = "Class6";
+}
+
+<h2>各業務線別逾預估完成日未結案件數統計及明細表</h2>
+
+
+@using (Html.BeginForm())
+{
+    <div>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.Label("預估完成日小於")
+            </dt>
+            <dd>
+                @Html.TextBox("date", "2017-11-12", new { @class = "form-control", type = "date" })
+            </dd>
+        </dl>
+        <div>
+            <input type="submit" value="查詢" class="btn btn-info" />
+        </div>
+    </div>
+}
+
+
+
+<table class="table">
+
+    <tr>
+        <th>
+            資訊部室
+        </th>
+        <th>
+            維護線別
+        </th>
+        <th>
+            受理
+        </th>
+        <th>
+            驗收
+        </th>
+        <th>
+            合計
+        </th>
+    </tr>
+
+    <tr>
+        @foreach (var item in Model.資訊部室)
+        {
+            foreach (var list in item.維護類別)
+            {
+            <tr>
+                <td>
+                    @item.資訊部室
+                </td>
+                <td>
+                    @list.維護案或業務線別
+                </td>
+                <td>
+                    @list.受理
+                </td>
+                <td>
+                    @list.驗收
+                </td>
+                <td>
+                    @list.合計
+                </td>
+            </tr>
+            }
+
+        }
+        <tr>
+            <td>
+                總計
+            </td>
+            <td>
+            </td>
+            <td>
+                @Model.Sum_Accepted
+            </td>
+            <td>
+                @Model.Sum_Acceptance
+            </td>
+            <td>
+                @{int total = Model.Sum_Acceptance + Model.Sum_Accepted;}
+                @total
+            </td>
+        </tr>
+
+
+
+    </table>
+
+
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>

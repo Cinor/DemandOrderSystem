@@ -1,0 +1,144 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<SingleProject.ViewModels.Table3>
+
+@{
+    ViewBag.Title = "Class 3";
+}
+
+<h2>已交付UAT但尚未結案之明細表</h2>
+
+@{
+    List<SelectListItem> items = new List<SelectListItem>{
+                new SelectListItem {Text = "收件完成", Value = "收件完成"},
+                new SelectListItem {Text = "受理", Value = "受理"} ,
+                new SelectListItem {Text = "結案", Value = "結案"},
+                new SelectListItem {Text = "驗收", Value = "驗收", Selected = true}
+    };
+
+}
+
+<p>
+    <div class="row">
+        @using (Html.BeginForm("Index", "Class3", FormMethod.Get))
+        {
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <div >
+                    <div class="form-group">
+                        
+                        @Html.Label("驗收起始日大於: ")
+                        <div>
+                            @Html.TextBox("Date0", "2017-12-31", new { @class = "form-control", type = "date" })
+                        </div>
+
+                        @Html.Label("驗收起始日小於: ")
+                        <div>
+                            @Html.TextBox("Date", "2017-12-31", new { @class = "form-control", type = "date" })
+                        </div>
+                        @Html.Label("需求單號查詢: ")
+                        <div>
+                            @Html.TextBox("SearchString", "", new { @class = "form-control" })
+
+                            @*@Html.Label("狀態: ") @Html.DropDownList("type", items, "", new { @class = "form-control" })*@
+                        </div>
+                        <br />
+                        <input type="submit" value="查詢" class="btn btn-info" />
+                    </div>
+                    <div>
+                        @Html.Label("符合條件總數: ") @TempData["TempDataTest"]
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <div >
+                    <div>
+                        @Html.Label("部室選擇: ") @Html.DropDownList("Room", null, "", new { @class = "form-control" })
+                    </div>
+                    @*@Html.Label("Order By: ")
+                    <div>
+                        @Html.RadioButton("orderby", "OrderID") @Html.Label("需求單排序")
+                        @Html.RadioButton("orderby", "Date") @Html.Label("驗收起始日排序")
+                        @Html.RadioButton("orderby", "Application_Room") @Html.Label("部室排序")
+                    </div>*@
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <div >
+                    <div>
+                        @Html.ActionLink("匯出查詢結果至Excel檔案", "OutExcel", new { type = Request.Params["type"],  Date0=  Request.Params["Date0"] ,date = Request.Params["Date"], Room = Request.Params["Room"] }, new { @class = "btn btn-info", })
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</p>
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().申請人部室)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().申請人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().需求單負責人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().驗收開始日)
+        </th>
+        @*<th>
+                @Html.DisplayNameFor(model => model.驗收結束日)
+            </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().需求單號)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().需求單主旨)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.申請人部室)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.申請人)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.需求單負責人)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.驗收開始日)
+            </td>
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.驗收結束日)
+                </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.需求單號)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.需求單主旨)
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", new { 需求單號 = item.需求單號 }) |
+                @Html.ActionLink("Edit", "Edit", new { 需求單號 = item.需求單號 })
+            </td>
+        </tr>
+    }
+
+</table>
+
+<form method="get">
+    @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", "Class3", new { page })
++ "&Date0=" + Request.Params["Date0"]
++ "&Date=" + Request.Params["Date"]
++ "&type=" + Request.Params["type"]
++ "&Room=" + Request.Params["Room"]
++ "&SearchString=" + Request.Params["SearchString"]
++ "&orderby=" + Request.Params["orderby"])
+</form>

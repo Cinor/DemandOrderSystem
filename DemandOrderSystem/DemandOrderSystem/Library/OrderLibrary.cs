@@ -271,15 +271,73 @@ namespace DemandOrderSystem.Library
             return result;
         }
 
+
         /// <summary>
-        /// 取得Table3項目
+        /// 取得SixViewModel項目
+        /// </summary>
+        /// <param name="expectFinishDate"></param>
+        /// <returns></returns>
+        public TableSixViewModel GetTableSixViewModel(DateTime expectFinishDate)
+        {
+            TableSixViewModel viewclass = new TableSixViewModel();
+            viewclass.ITDept = new List<Class6Department>();
+
+            var result = getOrderDatas().Where(x => x.ExpectFinishDate < expectFinishDate);
+
+            string[] dept = { "壽險資訊部", "資訊規劃部", "業務資訊部", "投資資訊部" };
+
+
+            foreach (var item in dept)
+            {
+                Class6Department Department = new Class6Department();
+                Department.ITDept = item;
+
+
+                var allworklinebydepartment = from i in result.Where(x => x.ITDept == item)
+                                              group i by i.MaintainLine into groupT
+                                              select new
+                                              {
+                                                  work_line = groupT.Key == null ? "(空白)" : groupT.Key
+                                              };
+
+                var worklinebydepartment = from i in result.Where(x => x.ITDept == item & (x.State == "驗收" || x.State == "受理"))
+                                           group i by i.MaintainLine into groupT2
+                                           select new
+                                           {
+                                               work_line2 = groupT2.Key == null ? "(空白)" : groupT2.Key,
+                                               Accepted = groupT2.Count(x => x.State == "受理"),
+                                               Acceptance = groupT2.Count(x => x.State == "驗收")
+                                           };
+
+                var worklinejoin = from i in allworklinebydepartment
+                                   join j in worklinebydepartment on i.work_line equals j.work_line2 into g
+                                   from j in g.DefaultIfEmpty()
+                                   select new Class6Detail()
+                                   {
+                                       MaintainLine = i.work_line,
+                                       受理 = j != null ? j.Accepted : 0,
+                                       驗收 = j != null ? j.Acceptance : 0
+                                   };
+
+                Department.維護類別 = worklinejoin.ToList();
+
+                viewclass.ITDept.Add(Department);
+
+            }
+
+
+            return viewclass;
+        }
+
+        /// <summary>
+        /// 取得ThreeViewModel項目
         /// </summary>
         /// <param name="orderState">需求單狀態</param>
         /// <param name="acceptionTestStartDate_0">驗收開始日_範圍起</param>
         /// <param name="acceptionTestStartDate_1">驗收開始日_範圍結</param>
         /// <param name="applyDept">申請人部室</param>
         /// <returns></returns>
-        public List<Table3> getOrdersTable3(string orderState, string acceptionTestStartDate_0, string acceptionTestStartDate_1, string applyDept)
+        public List<TableThreeViewModel> GetTableThreeViewModel(string orderState, string acceptionTestStartDate_0, string acceptionTestStartDate_1, string applyDept)
         {
 
             var Table = (from odt in getOrderDatas()
@@ -287,7 +345,7 @@ namespace DemandOrderSystem.Library
                          & (!string.IsNullOrWhiteSpace(acceptionTestStartDate_0) ? odt.AcceptionTestStartDate >= Convert.ToDateTime(acceptionTestStartDate_0) : true)
                          && (!string.IsNullOrWhiteSpace(acceptionTestStartDate_1) ? odt.AcceptionTestStartDate <= Convert.ToDateTime(acceptionTestStartDate_1) : true)
                          & (!string.IsNullOrWhiteSpace(applyDept) ? odt.ApplyDept == applyDept : true)
-                         select new Table3
+                         select new TableThreeViewModel
                          {
                              OrderID = odt.OrderID,
                              OrderName = odt.OrderName,
@@ -300,14 +358,20 @@ namespace DemandOrderSystem.Library
             return Table;
         }
 
-
-        public List<Table7> getOrdersTable7(string 結案日, string 撤件日期, string 申請部室)
+        /// <summary>
+        /// 取得SevenViewModel項目
+        /// </summary>
+        /// <param name="結案日"></param>
+        /// <param name="撤件日期"></param>
+        /// <param name="申請部室"></param>
+        /// <returns></returns>
+        public List<TableSevenViewModel> GetTableSevenViewModel(string 結案日, string 撤件日期, string 申請部室)
         {
-            List<Table7> _Table = new List<Table7>();
+            List<TableSevenViewModel> _Table = new List<TableSevenViewModel>();
             DataTable orderDt = new DataTable();
 
             orderDt = dBService.GetTable7_Details(結案日, 撤件日期);
-            _Table = orderDt.ToList<Table7>();
+            _Table = orderDt.ToList<TableSevenViewModel>();
 
             if (!string.IsNullOrWhiteSpace(申請部室))
             {
@@ -318,14 +382,14 @@ namespace DemandOrderSystem.Library
         }
 
         /// <summary>
-        /// 取得Table8項目
+        /// 取得EightViewModel項目
         /// </summary>
         /// <param name="orderState">需求單狀態</param>
         /// <param name="acceptionTestFinishDate_0">驗收結束日_範圍起</param>
         /// <param name="acceptionTestFinishDate_1">驗收結束日_範圍結</param>
         /// <param name="maintainITDept">維護資訊室</param>
         /// <returns></returns>
-        public List<Table8> getOrdersTable8(string orderState, string acceptionTestFinishDate_0, string acceptionTestFinishDate_1,  string maintainITDept)
+        public List<TableEightViewModel> GetTableEightViewModel(string orderState, string acceptionTestFinishDate_0, string acceptionTestFinishDate_1,  string maintainITDept)
         {
 
             var Table = (from odt in getOrderDatas()
@@ -333,7 +397,7 @@ namespace DemandOrderSystem.Library
                          & (!string.IsNullOrWhiteSpace(acceptionTestFinishDate_0) ? odt.AcceptionTestFinishDate >= Convert.ToDateTime(acceptionTestFinishDate_0) : true)
                          && (!string.IsNullOrWhiteSpace(acceptionTestFinishDate_1) ? odt.AcceptionTestFinishDate <= Convert.ToDateTime(acceptionTestFinishDate_1) : true)
                          & (!string.IsNullOrWhiteSpace(maintainITDept) ? odt.MaintainITDept == maintainITDept : true)
-                         select new Table8
+                         select new TableEightViewModel
                          {
                              MaintainITDept = odt.MaintainITDept,
                              MaintainITSec = odt.MaintainITSec,

@@ -84,5 +84,18 @@ namespace DemandOrderSystem.Controllers
 
             return View(result);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public ActionResult TableSix(string date = "2017-11-12")
+        {
+            var view = dbLibrary.GetTableSixViewModel(Convert.ToDateTime(date));
+
+            return View(view);
+        }
+
     }
 }

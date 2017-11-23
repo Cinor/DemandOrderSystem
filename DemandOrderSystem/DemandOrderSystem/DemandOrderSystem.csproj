@@ -468,9 +468,10 @@
     <Compile Include="Models\ViewModel\TableAllViewModel.cs" />
     <Compile Include="Models\ViewModel\TableFiveViewModel.cs" />
     <Compile Include="Models\ViewModel\TableFourViewModel.cs" />
-    <Compile Include="Models\ViewModel\Table3.cs" />
-    <Compile Include="Models\ViewModel\Table7.cs" />
-    <Compile Include="Models\ViewModel\Table8.cs" />
+    <Compile Include="Models\ViewModel\TableSixViewModel.cs" />
+    <Compile Include="Models\ViewModel\TableThreeViewModel.cs" />
+    <Compile Include="Models\ViewModel\TableSevenViewModel.cs" />
+    <Compile Include="Models\ViewModel\TableEightViewModel.cs" />
     <Compile Include="Models\ViewModel\TableOneViewModel.cs" />
     <Compile Include="Models\WBSItem.cs">
       <DependentUpon>RequireSystem.tt</DependentUpon>
@@ -573,6 +574,10 @@
     <Content Include="Views\Order\TableAll.cshtml" />
     <Content Include="Views\Order\TableFour.cshtml" />
     <Content Include="Views\Order\TableFive.cshtml" />
+    <Content Include="Views\Order\TableThree.cshtml" />
+    <Content Include="Views\Order\TableSeven.cshtml" />
+    <Content Include="Views\Order\TableEight.cshtml" />
+    <Content Include="Views\Order\TableSix.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

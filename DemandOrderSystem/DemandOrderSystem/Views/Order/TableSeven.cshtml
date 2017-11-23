@@ -1,0 +1,128 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<SingleProject.ViewModels.Table7>
+
+@{
+    ViewBag.Title = "Class 7";
+}
+
+@*@section styles
+    {
+        <link href="~/Content/PagedList.css" rel="stylesheet" />
+    }*@
+
+
+<h2>撤件明細</h2>
+
+<p>
+    <div class="row">
+        @using (Html.BeginForm("Index", "Class7", FormMethod.Get))
+        {
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <div>
+                    <div class="form-group">
+                        @*@Html.Label("結案日: ")
+                        <div>
+                            @Html.TextBox("Date1", "2013-11-30", new { @class = "form-control", type = "date" })
+                        </div>*@
+                        @Html.Label("撤件日期大於: ")
+                        <div>
+                            @Html.TextBox("Date2", "2014-11-30", new { @class = "form-control", type = "date" })
+                        </div>
+
+                        @Html.Label("需求單號查詢: ")
+                        <div>
+                            @Html.TextBox("SearchString", "", new { @class = "form-control" })
+                        </div>
+                        <br />
+                        <input type="submit" value="查詢" class="btn btn-info" />
+                    </div>
+                    <div>
+                        @Html.Label("符合條件總數: ") @TempData["TempDataTest"]
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <div>
+                    <div>
+                        @Html.Label("部室選擇: ") @Html.DropDownList("Room", null, "", new { @class = "form-control" })
+                    </div>
+                    @*@Html.Label("Order By: ")
+                    <div>
+                        @Html.RadioButton("orderby", "OrderID") @Html.Label("OrderID")
+                        @Html.RadioButton("orderby", "Application_department") @Html.Label("Application_department")
+                    </div>*@
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <div>
+                    <div>
+                        @Html.ActionLink("匯出查詢結果至Excel檔案", "OutExcel", new { Date1 = Request.Params["Date1"], Date2 = Request.Params["Date2"], Room = Request.Params["Room"] }, new { @class = "btn btn-info", })
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+</p>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().申請部室)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().申請課別)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().申請人)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().需求單號)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().需求單主旨)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().撤件日期)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.申請部室)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.申請課別)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.申請人)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.需求單號)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.需求單主旨)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.撤件日期)
+            </td>
+            <td>
+                @*@Html.ActionLink("Details", "Details", "Class7", new { 需求單號 = item.需求單號 }) |*@
+                @*@Html.ActionLink("Edit", "Edit", new { 需求單號 = item.需求單號 })*@
+            </td>
+        </tr>
+    }
+
+</table>
+<form method="get">
+    @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page })
++ "&Date1=" + Request.Params["Date1"]
++ "&Date2=" + Request.Params["Date2"]
++ "&Room=" + Request.Params["Room"]
++ "&SearchString=" + Request.Params["SearchString"])
+</form>

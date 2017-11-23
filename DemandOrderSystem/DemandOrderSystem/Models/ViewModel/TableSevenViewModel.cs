@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DemandOrderSystem.Models.ViewModel
 {
-    public class Table8
+    public class TableSevenViewModel
     {
         /// <summary>
         /// 需求單號
@@ -14,22 +14,22 @@ namespace DemandOrderSystem.Models.ViewModel
         public string OrderID { get; set; }
 
         /// <summary>
-        /// 維護資訊室
+        /// 申請部室
         /// </summary>
-        [DisplayName("資訊室")]
-        public string MaintainITDept { get; set; }
+        [DisplayName("申請部室")]
+        public string ApplyDept { get; set; }
 
         /// <summary>
-        /// 資訊課
+        /// 申請課別
         /// </summary>
-        [DisplayName("資訊課")]
-        public string MaintainITSec { get; set; }
+        [DisplayName("申請課別")]
+        public string ApplySec { get; set; }
 
         /// <summary>
-        /// 需求單負責人
+        /// 申請人
         /// </summary>
-        [DisplayName("需求單負責人")]
-        public string DemandDutyPerson { get; set; }
+        [DisplayName("申請人")]
+        public string Applicant { get; set; }
 
         /// <summary>
         /// 需求單主旨
@@ -38,18 +38,12 @@ namespace DemandOrderSystem.Models.ViewModel
         public string OrderName { get; set; }
 
         /// <summary>
-        /// 狀態
-        /// </summary>
-        [DisplayName("狀態")]
-        public string State { get; set; }
-
-        /// <summary>
-        /// 驗收結束日
+        /// 撤件日期
         /// </summary>
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
-        [DisplayName("驗收結束日")]
-        public DateTime? AcceptionTestFinishDate { get; set; }
+        [DisplayName("撤件日期")]
+        public DateTime? 撤件日期 { get; set; }//撤件日期
 
     }
 }

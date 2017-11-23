@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace DemandOrderSystem.Models.ViewModel
 {
-    public class Table3
+    public class TableEightViewModel
     {
         /// <summary>
         /// 需求單號
@@ -16,16 +14,16 @@ namespace DemandOrderSystem.Models.ViewModel
         public string OrderID { get; set; }
 
         /// <summary>
-        /// 申請人部室
+        /// 維護資訊室
         /// </summary>
-        [DisplayName("申請人部室")]
-        public string ApplyDept { get; set; }
+        [DisplayName("資訊室")]
+        public string MaintainITDept { get; set; }
 
         /// <summary>
-        /// 申請人
+        /// 資訊課
         /// </summary>
-        [DisplayName("申請人")]
-        public string Applicant { get; set; }
+        [DisplayName("資訊課")]
+        public string MaintainITSec { get; set; }
 
         /// <summary>
         /// 需求單負責人
@@ -34,18 +32,24 @@ namespace DemandOrderSystem.Models.ViewModel
         public string DemandDutyPerson { get; set; }
 
         /// <summary>
-        /// 驗收開始日
-        /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
-        [DisplayName("驗收開始日")]
-        public DateTime? AcceptionTestStartDate { get; set; }
-
-        /// <summary>
         /// 需求單主旨
         /// </summary>
         [DisplayName("需求單主旨")]
         public string OrderName { get; set; }
+
+        /// <summary>
+        /// 狀態
+        /// </summary>
+        [DisplayName("狀態")]
+        public string State { get; set; }
+
+        /// <summary>
+        /// 驗收結束日
+        /// </summary>
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
+        [DisplayName("驗收結束日")]
+        public DateTime? AcceptionTestFinishDate { get; set; }
 
     }
 }
