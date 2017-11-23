@@ -1,0 +1,143 @@
+﻿@model DemandOrderSystem.Models.ViewModel.TableFourViewModel
+
+@{
+    ViewBag.Title = "需求單分類依月份統計表";
+}
+
+@section scripts{
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+
+        // Load the Visualization API and the corechart package.
+        google.charts.load('current' , { 'packages': ['corechart'] });
+
+        // Set a callback to run when the Google Visualization API is loaded.
+        google.charts.setOnLoadCallback(drawChart);
+
+        // Callback that creates and populates a data table,
+        // instantiates the pie chart, passes in the data and
+        // draws it.
+        function drawChart() {
+
+            // Create the data table.
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Category');
+            data.addColumn('number', 'sum');
+            data.addRows([
+                ['其他', 0],
+
+            ]);
+            @{
+                foreach (var item in Model.countByMonth)
+                {
+                    @:data.addRows([['@item.classificationName' ,@item.sum]]);
+                }
+            }
+
+
+
+            // Set chart options
+            var options = {
+                'title': '電腦需求單分類佔據圖',
+                'width': 1000,
+                'height': 400
+            };
+
+            // Instantiate and draw our chart, passing in some options.
+            var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+
+            chart.draw(data, options);
+        }
+    </script>
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+}
+
+
+
+<h2>需求單分類依月份統計表</h2>
+
+
+
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @*<h4>電腦需求單分類統計表</h4>*@
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.startTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.startTime, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.startTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.endTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.endTime, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.endTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="分析" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+
+@{ DateTime? tableDateTime = Model.startTime;
+    if (Model.countByMonth.Count != 0)
+    {
+        <table class="table">
+            <tr>
+                <th>
+                    類別
+                </th>
+                @while (tableDateTime <= Model.endTime)
+                {
+                    <th>
+                        @Html.Label(tableDateTime.Value.ToString("yyyy-MMM"))
+                        @{tableDateTime = tableDateTime.Value.AddMonths(1);}
+                    </th>
+                            }
+                <th>
+                    總計
+                </th>
+            </tr>
+
+            @foreach (var item in Model.countByMonth)
+                {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.classificationName)
+                    </td>
+
+                    @foreach (var item2 in item.counts)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item2)
+                        </td>
+                    }
+                    <td>
+                        @Html.Label(item.sum.ToString())
+                    </td>
+                </tr>
+            }
+
+
+        </table>
+        <div id="chart_div"></div>
+                            }
+}
