@@ -230,6 +230,7 @@
     <Compile Include="Models\DataModifyFormAmort.cs">
       <DependentUpon>RequireSystem.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DataTableExtensions.cs" />
     <Compile Include="Models\DeptAmortFlag.cs">
       <DependentUpon>RequireSystem.tt</DependentUpon>
     </Compile>
@@ -443,6 +444,9 @@
     <Compile Include="Models\tmpDNEED.cs">
       <DependentUpon>RequireSystem.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModel\Table3.cs" />
+    <Compile Include="Models\ViewModel\Table7.cs" />
+    <Compile Include="Models\ViewModel\Table8.cs" />
     <Compile Include="Models\ViewModel\TableOneViewModel.cs" />
     <Compile Include="Models\WBSItem.cs">
       <DependentUpon>RequireSystem.tt</DependentUpon>
