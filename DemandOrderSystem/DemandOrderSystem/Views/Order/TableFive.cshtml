@@ -11,13 +11,13 @@
 {
     <div class="form-horizontal">
         <hr />
-        <div class="form-group">
+        <div class="form-group col-md-10">
             @Html.Label("受理狀態選擇: ")@Html.DropDownList("condition", null, "", new { @class = "form-control" })
         </div>
 
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
+            <div class="col-md-10">
                 <input type="submit" value="查詢" class="btn btn-default" />
             </div>
         </div>

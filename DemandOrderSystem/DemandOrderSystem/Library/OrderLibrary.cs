@@ -61,15 +61,16 @@ namespace DemandOrderSystem.Library
         public TableAllViewModel GetTableAllViewModel(String applicant_department_list, String information_management_list, DateTime? evaluate_recived_date_start, DateTime? evaluate_recived_date_end, DateTime? closed_date_start, DateTime? closed_date_end, int currentPage)
         {
             TableAllViewModel tableAllViewModel = new TableAllViewModel();
-            var list = getOrderDatas().OrderBy(c => c.OrderID)
+            var orderDatasList = getOrderDatas();
+            var list = orderDatasList.OrderBy(c => c.OrderID)
                 .Where(c => string.IsNullOrEmpty(applicant_department_list) ? true : c.ApplyDept == applicant_department_list)
                 .Where(c => string.IsNullOrEmpty(information_management_list) ? true : c.MaintainITDept == information_management_list)
                 .Where(c => evaluate_recived_date_start.HasValue && evaluate_recived_date_end.HasValue ? c.ExpectRecieveDate >= evaluate_recived_date_start && c.ExpectRecieveDate <= evaluate_recived_date_end : true)
                 .Where(c => closed_date_start.HasValue && closed_date_end.HasValue ? c.CaseCloseDate >= closed_date_start && c.CaseCloseDate <= closed_date_end : true);
             var result = list.ToPagedList(currentPage, 20);
             tableAllViewModel.orderList = result;
-            tableAllViewModel.applicant_department_list = list.Where(x => !String.IsNullOrEmpty(x.ApplyDept)).GroupBy(x => x.ApplyDept).Select(x => new SelectListItem { Text = x.Key, Value = x.Key }).ToList();
-            tableAllViewModel.information_management_list = list.Where(x => !String.IsNullOrEmpty(x.MaintainITDept)).GroupBy(x => x.MaintainITDept).Select(x => new SelectListItem { Text = x.Key, Value = x.Key }).ToList();
+            tableAllViewModel.applicant_department_list = orderDatasList.Where(x => !String.IsNullOrEmpty(x.ApplyDept)).GroupBy(x => x.ApplyDept).Select(x => new SelectListItem { Text = x.Key, Value = x.Key }).ToList();
+            tableAllViewModel.information_management_list = orderDatasList.Where(x => !String.IsNullOrEmpty(x.MaintainITDept)).GroupBy(x => x.MaintainITDept).Select(x => new SelectListItem { Text = x.Key, Value = x.Key }).ToList();
 
 
             return tableAllViewModel;

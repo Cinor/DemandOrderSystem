@@ -22,15 +22,27 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("首頁", "Index", "Home")</li>
-                    <li>@Html.ActionLink("0","TableAll","Order")</li>
-                    <li>@Html.ActionLink("1", "TableOne", "Order")</li>
-                    <li>@Html.ActionLink("2", "TableTwo", "Order")</li>
-                    <li>@Html.ActionLink("3", "TableThree", "Order")</li>
-                    <li>@Html.ActionLink("4", "TableFour", "Order")</li>
-                    <li>@Html.ActionLink("5", "TableFive", "Order")</li>
-                    <li>@Html.ActionLink("6", "TableSix", "Order")</li>
-                    <li>@Html.ActionLink("7", "TableSeven", "Order")</li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">需求單功能 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li role="separator" class="divider"></li>
+                            <li><a href="~/Order/TableAll">總表</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="~/Order/TableOne">1</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="~/Order/TableTwo">2</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="~/Order/TableThree">3</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="~/Order/TableFour">分類統計表</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="~/Order/TableFive">未結案且未回覆預估完成日件數統計及明細表</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="~/Order/TableSix">6</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="~/Order/TableSeven">7</a></li>
+                        </ul>
+                    </li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
