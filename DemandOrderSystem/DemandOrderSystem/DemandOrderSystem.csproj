@@ -465,6 +465,7 @@
     <Compile Include="Models\tmpDNEED.cs">
       <DependentUpon>RequireSystem.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModel\MonthDataViewModel.cs" />
     <Compile Include="Models\ViewModel\TableAllViewModel.cs" />
     <Compile Include="Models\ViewModel\TableFiveViewModel.cs" />
     <Compile Include="Models\ViewModel\TableFourViewModel.cs" />
@@ -473,6 +474,7 @@
     <Compile Include="Models\ViewModel\TableSevenViewModel.cs" />
     <Compile Include="Models\ViewModel\TableEightViewModel.cs" />
     <Compile Include="Models\ViewModel\TableOneViewModel.cs" />
+    <Compile Include="Models\ViewModel\TableTwoViewModel.cs" />
     <Compile Include="Models\WBSItem.cs">
       <DependentUpon>RequireSystem.tt</DependentUpon>
     </Compile>
@@ -578,6 +580,9 @@
     <Content Include="Views\Order\TableSeven.cshtml" />
     <Content Include="Views\Order\TableEight.cshtml" />
     <Content Include="Views\Order\TableSix.cshtml" />
+    <Content Include="Views\Order\MonthDatas.cshtml" />
+    <Content Include="Views\Order\Detail.cshtml" />
+    <Content Include="Views\Order\TableTwo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

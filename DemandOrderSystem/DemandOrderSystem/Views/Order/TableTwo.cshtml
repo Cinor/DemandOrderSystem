@@ -1,0 +1,439 @@
+﻿@using DemandOrderSystem.Models.ViewModel
+@model DemandOrderSystem.Models.ViewModel.TableTwoViewModel
+@*@model DemandOrder.Models.Index2ViewModel*@
+@{
+    ViewBag.Title = "需求單申請部室";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+        google.charts.load('current', { packages: ['corechart', 'line'] });
+
+        console.log(@Model.Orders.Where(model => model.ExpectRecieveDate.GetValueOrDefault().Date > Model.SearchDate.Date || (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.Month)).Count() != 0);
+
+        if (@Model.Orders.Where(model => model.ExpectRecieveDate.GetValueOrDefault().Date > Model.SearchDate.Date || (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.Month)).Count() != 0) {
+
+            google.charts.setOnLoadCallback(drawPieChart);
+
+            google.charts.setOnLoadCallback(drawFinishPercentBarChart);
+
+        }
+
+
+        function drawPieChart() {
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Dept');
+            data.addColumn('number', 'UnfinishOrderCount');
+
+            @{
+                var applyDept = Model.Orders.Where(model => model.ExpectRecieveDate.GetValueOrDefault().Date > Model.SearchDate.Date || (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.Month)).GroupBy(model => model.ApplyDept).OrderBy(g => g.Count());
+
+                applyDept = applyDept.OrderByDescending(g => g.Count());
+
+                var gCount = 1;
+
+                var otherUnfinish = 0;
+
+                foreach(var g in applyDept.Take(10))
+                {
+
+
+                    @:tempApply = '@g.First().ApplyDept';
+
+                    @:console.log(tempApply);
+
+                    @:tempUnfinish = @g.Where(model => model.State != "結案").Count()>0?@g.Where(model => model.State != "結案").Count():0;
+
+                    @:data.addRows([[tempApply, tempUnfinish]]);
+
+                }
+
+                foreach(var g in applyDept.Skip(10))
+                {
+                    otherUnfinish += g.Where(model => model.State != "結案").Count() > 0 ? @g.Where(model => model.State != "結案").Count() : 0;
+                }
+
+                @:data.addRows([['其他',@otherUnfinish]]);
+            }
+
+            var options = {
+                title: '各申請部門未完成比例',
+                height: 400,
+                width: 700,
+                pieHole: 0.4
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('dept_order_unfinishpercent_pie_chart_div'));
+
+            chart.draw(data, options);
+        }
+
+
+        function drawFinishPercentBarChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Dept');
+            data.addColumn('number', '完成百分比');
+
+            @{
+                applyDept = Model.Orders.Where(model => model.ExpectRecieveDate.GetValueOrDefault().Date > Model.SearchDate.Date || (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.Month)).GroupBy(model => model.ApplyDept).OrderBy(g => g.Count());
+
+                applyDept = applyDept.OrderByDescending(g => g.Count());
+
+                var otherCount = 0;
+
+                var otherUnfinishPercent = 0;
+
+                foreach (var g in applyDept.Take(10))
+                {
+                    @:tempApplyDept = '@g.First().ApplyDept';
+
+                    @:console.log('部門名稱:' + tempApplyDept);
+
+                    @:finishPercent = @g.Where(model => model.State != "結案").Count() * 100 / @g.Count();
+
+                    @:data.addRows([[tempApplyDept, finishPercent]]);
+
+                }
+
+                foreach(var g in applyDept.Skip(10))
+                {
+                    otherCount += g.Count();
+                }
+
+                if(otherCount != 0)
+                {
+                    @:otherUnfinishPercent = @otherUnfinish * 100 / @otherCount;
+                }
+
+                @:data.addRows([['其他', otherUnfinishPercent]]);
+            }
+
+            var options = {
+                title: '各申請部門需求單完成百分比',
+                height: 400,
+                width: 700,
+                hAxis: {
+                    title: 'Percent',
+                    minValue: 0,
+                    maxValue: 100
+                },
+                vAxis: {
+                    title: 'Dept'
+                },
+                colors: ['#ff906b']
+            };
+
+            var chart = new google.visualization.BarChart(document.getElementById('dept_order_finishpercent_bar_chart_div'));
+
+            chart.draw(data, options);
+        }
+
+    </script>
+}
+<h2 style="font-family:微軟正黑體;">需求單申請部門狀態表</h2>
+@*order 時間*@
+<div class="row">
+    @using (Html.BeginForm())
+    {
+        <div class="col-md-4 row">
+            @Html.LabelFor(model => model.DeptList)
+            @Html.DropDownList("SelectedDept", Model.DeptList, new { @class = "form-control" })
+            @Html.LabelFor(model => model.SearchDate)
+
+            @Html.EditorFor(model => model.SearchDate, "{0:yyyy-MM-dd}", new { htmlAttributes = new { @id = "datetimepicker3", @class = "form-control", @Value = Model.SearchDate.ToString("yyyy-MM-dd"), @Max = DateTime.Now.AddMonths(-1).ToString("yyyy/MM/dd") } })
+            @Html.HiddenFor(model => model.SelectedDept)
+            @*@Html.TextBoxFor(model => model.SearchDate, "{0:yyyy/MM}", new { @id = "datetimepicker4", @class = "dateInput", @placeholder = "plz input date", @Value = DateTime.Now.AddYears(-1).ToString("yyyy/MM") })*@
+            @* 無法work remote valid *@
+            @*@Html.ValidationMessageFor(model => model.SearchDate,"日期必須在這個月以前")*@
+            <input type="submit" value="確認" class="btn btn-info" />
+        </div>
+    }
+</div>
+<br />
+<table class="table">
+    <tr bgcolor="#5f89cc" style="color:white">
+        <th>申請課</th>
+        <th>狀態</th>
+        @{
+            for (int i = 0; i < 12; i++)
+            {
+                if (Model.SearchDate.AddMonths(i).Year == DateTime.Now.Year && Model.SearchDate.AddMonths(i).Month == DateTime.Now.Month)
+                {
+                    break;
+                }
+
+                <th align="center">
+                    @Html.DisplayName(string.Format("{0}年{1}月", Model.SearchDate.AddMonths(i).Year, Model.SearchDate.AddMonths(i).Month))
+                </th>
+            }
+        }
+    </tr>
+    @{
+        var group = Model.Orders.GroupBy(model => model.ApplyDept).OrderByDescending(g => g.Where(o => o.ExpectRecieveDate.Value.Date > Model.SearchDate.Date).Where(o => o.State != "結案").Count());
+
+        var count = 1;
+
+        var orderCount = 0;
+
+        int[,] others = new int[3, 12];
+
+        foreach (var g in group.Take(10))
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                var bgcolor = "";
+                if (i == 0)
+                {
+                    bgcolor = "#c1d8ff";
+                }
+                else
+                {
+                    bgcolor = "#e5ecf9";
+                }
+
+                <tr bgcolor=@bgcolor>
+                    @{
+                        if (true)
+                        {
+                            switch (i)
+                            {
+                                //收件 => 受理
+                                case 0:
+
+                                    <td>@g.First().ApplyDept</td>
+
+                                    <td>收件</td>
+
+                                    for (int j = 0; j < 12; j++)
+                                    {
+                                        if (Model.SearchDate.AddMonths(j).Year == DateTime.Now.Year && Model.SearchDate.AddMonths(j).Month == DateTime.Now.Month)
+                                        {
+                                            break;
+                                        }
+
+                                        <td>
+                                            @{
+                                                orderCount = g.Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.AddMonths(j).Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.AddMonths(j).Month)).Count();
+                                            }
+                                            @Html.ActionLink(string.Format("{0}", orderCount), "MonthDatas", new MonthDataViewModel()
+                                            {
+                                                DataMonth = Model.SearchDate.AddMonths(j),
+                                                State = "受理",
+                                                ApplyDeptName = g.First().ApplyDept
+                                            })
+                                        </td>
+                                                    }
+
+                                                    break;
+
+                                                case 1:
+
+                                                    <td></td>
+
+                                                    <td>完成</td>
+
+                                                    for (int j = 0; j < 12; j++)
+                                                    {
+                                                        if (Model.SearchDate.AddMonths(j).Year == DateTime.Now.Year && Model.SearchDate.AddMonths(j).Month == DateTime.Now.Month)
+                                                        {
+                                                            break;
+                                                        }
+
+                                                        <td>
+                                                            @{
+                                                                orderCount = g.Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.AddMonths(j).Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.AddMonths(j).Month)).Where(model => model.State == "結案").Count();
+                                                            }
+                                                            @Html.ActionLink(string.Format("{0}", orderCount), "MonthDatas", new MonthDataViewModel()
+                                                           {
+                                                               DataMonth = Model.SearchDate.AddMonths(j),
+                                                               State = "結案",
+                                                               ApplyDeptName = g.First().ApplyDept
+                                                           })
+                                                        </td>
+                                                                    }
+
+                                                                    break;
+                                                                //累計未完成
+                                                                case 2:
+
+                                                                    <td></td>
+
+                                                                    <td>累計未完成</td>
+
+                                                                    for (int j = 0; j < 12; j++)
+                                                                    {
+                                                                        if (Model.SearchDate.AddMonths(j).Year == DateTime.Now.Year && Model.SearchDate.AddMonths(j).Month == DateTime.Now.Month)
+                                                                        {
+                                                                            break;
+                                                                        }
+
+                                                                        <td>
+                                                                            @{
+                                                                                orderCount = g.Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Date < Model.SearchDate.Date || (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.AddMonths(j).Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.AddMonths(j).Month))).Where(model => model.State != "結案").Count();
+                                                                            }
+                                                                            @Html.ActionLink(string.Format("{0}", orderCount), "MonthDatas", new MonthDataViewModel()
+                                                                           {
+                                                                               DataMonth = Model.SearchDate.AddMonths(j),
+                                                                               State = "累計未完成",
+                                                                               ApplyDeptName = g.First().ApplyDept
+                                                                           })
+                                                                        </td>
+                                                                                        }
+
+                                                                                        break;
+                                                                                    }
+                                                                                }
+                    }
+                </tr>
+                                                                                    }
+
+                                                                                    count++;
+                                                                                }
+
+                                                                                foreach (var g in group.Skip(10))
+                                                                                {
+                                                                                    for (int i = 0; i < 3; i++)
+                                                                                    {
+                                                                                        <tr>
+                                                                                            @{
+                                                                                                if (true)
+                                                                                                {
+                                                                                                    switch (i)
+                                                                                                    {
+                                                                                                        //收件 => 受理
+                                                                                                        case 0:
+
+                                                                                                            @*<td>@g.First().ApplyDept</td>
+
+                                                                                                                <td>收件</td>*@
+
+                                                                                            for (int j = 0; j < 12; j++)
+                                                                                            {
+                                                                                                if (Model.SearchDate.AddMonths(j).Year == DateTime.Now.Year && Model.SearchDate.AddMonths(j).Month == DateTime.Now.Month)
+                                                                                                {
+                                                                                                    break;
+                                                                                                }
+
+                                                                                                @*<td>
+                                                                                                        @g.Where(model => (model.ExpectStartDate.Year == Model.SearchDate.AddMonths(j).Year && model.ExpectStartDate.Month == Model.SearchDate.AddMonths(j).Month)).Count()
+                                                                                                    </td>*@
+
+                                                                                                    others[i, j] += g.Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.AddMonths(j).Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.AddMonths(j).Month)).Count();
+
+                                                                                                }
+
+                                                                                                break;
+
+                                                                                            case 1:
+
+                                                                                                @*<td></td>
+
+                                                                                                    <td>完成</td>*@
+
+                                                                                            for (int j = 0; j < 12; j++)
+                                                                                            {
+                                                                                                if (Model.SearchDate.AddMonths(j).Year == DateTime.Now.Year && Model.SearchDate.AddMonths(j).Month == DateTime.Now.Month)
+                                                                                                {
+                                                                                                    break;
+                                                                                                }
+
+                                                                                                @*<td>
+                                                                                                        @g.Where(model => (model.ExpectStartDate.Year == Model.SearchDate.AddMonths(j).Year && model.ExpectStartDate.Month == Model.SearchDate.AddMonths(j).Month)).Where(model => model.State == "結案").Count()
+                                                                                                    </td>*@
+
+                                                                                                    others[i, j] += g.Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.AddMonths(j).Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.AddMonths(j).Month)).Where(model => model.State == "結案").Count();
+                                                                                                }
+
+                                                                                                break;
+                                                                                            //累計未完成
+                                                                                            case 2:
+
+                                                                                                @*<td></td>
+
+                                                                                                    <td>累計未完成</td>*@
+
+                                                                                            for (int j = 0; j < 12; j++)
+                                                                                            {
+                                                                                                if (Model.SearchDate.AddMonths(j).Year == DateTime.Now.Year && Model.SearchDate.AddMonths(j).Month == DateTime.Now.Month)
+                                                                                                {
+                                                                                                    break;
+                                                                                                }
+
+                                                                                                @*<td>
+                                                                                                        @g.Where(model => (model.ExpectStartDate.Date < Model.SearchDate.Date || (model.ExpectStartDate.Year == Model.SearchDate.AddMonths(j).Year && model.ExpectStartDate.Month == Model.SearchDate.AddMonths(j).Month))).Where(model => model.State != "結案").Count()
+                                                                                                    </td>*@
+
+                                                                                                        others[i, j] += g.Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Date < Model.SearchDate.Date || (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.AddMonths(j).Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.AddMonths(j).Month))).Where(model => model.State != "結案").Count();
+                                                                                                    }
+
+                                                                                                    break;
+                                                                                                }
+                                                                                            }
+                                                                                            }
+                                                                                        </tr>
+                                                                                                    }
+
+                                                                                                    count++;
+                                                                                                }
+
+                                                                                                for (int i = 0; i < others.GetLength(0); i++)
+                                                                                                {
+                                                                                                    var bgcolor = "";
+                                                                                                    if (i == 0)
+                                                                                                    {
+                                                                                                        bgcolor = "#c1d8ff";
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        bgcolor = "#e5ecf9";
+                                                                                                    }
+
+                                                                                                    <tr bgcolor=@bgcolor>
+                                                                                                        @{
+                                                                                                            if (i == 0)
+                                                                                                            {
+                                                                                                                <td>其他</td>
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                <td></td>
+                                                                                                            }
+
+                                                                                                            switch (i)
+                                                                                                            {
+                                                                                                                case 0:
+                                                                                                                    <td>受理</td>
+                                                                                                                    break;
+                                                                                                                case 1:
+                                                                                                                    <td>完成</td>
+                                                                                                                    break;
+                                                                                                                case 2:
+                                                                                                                    <td>累計未完成</td>
+                                                                                                                    break;
+                                                                                                            }
+
+                                                                                                            for (int j = 0; j < others.GetLength(1); j++)
+                                                                                                            {
+                                                                                                                var num = others[i, j];
+
+                                                                                                                <td>
+                                                                                                                    @num
+                                                                                                                </td>
+                                                                                                            }
+
+                                                                                                        }
+                                                                                                    </tr>
+                                                                                                            }
+
+    }
+
+</table>
+<br />
+<div class="row">
+    <div id="dept_order_unfinishpercent_pie_chart_div" class="col-md-6"></div>
+    <br />
+    <div id="dept_order_finishpercent_bar_chart_div" class="col-md-6"></div>
+</div>

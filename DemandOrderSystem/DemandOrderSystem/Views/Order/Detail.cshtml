@@ -1,0 +1,174 @@
+﻿@model DemandOrderSystem.Models.Order
+
+@{
+    ViewBag.Title = "Detail";
+}
+
+@{
+
+    var orderIDTitle = string.Format("訂單編號:{0}", Model.OrderID);
+
+    var orderNameTitle = string.Format("{0}", Model.OrderName);
+}
+
+<h2>@orderIDTitle</h2>
+
+<h3>@orderNameTitle</h3>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ApplyDept)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApplyDept)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ApplySec)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApplySec)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Applicant)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Applicant)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OrderName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OrderName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ITDept)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ITDept)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.State)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.State)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ExpectCompleteDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ExpectCompleteDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ExpectRecieveDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ExpectRecieveDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ExpectStartDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ExpectStartDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ExpectFinishDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ExpectFinishDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AcceptionTestStartDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AcceptionTestStartDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AcceptionTestFinishDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AcceptionTestFinishDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CaseCloseDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CaseCloseDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MaintainLine)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MaintainLine)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MaintainITDept)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MaintainITDept)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MaintainITSec)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MaintainITSec)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DemandDutyPerson)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DemandDutyPerson)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ClassNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClassNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ClassName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClassName)
+        </dd>
+
+    </dl>
+</div>

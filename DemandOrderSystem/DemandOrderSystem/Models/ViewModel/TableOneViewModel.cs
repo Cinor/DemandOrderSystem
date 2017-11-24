@@ -21,7 +21,10 @@ namespace DemandOrderSystem.Models.ViewModel
         new DepartmentName{ Id=4, Name="壽險資訊部"},
         new DepartmentName{ Id=5, Name="資訊規劃部"} };
 
-        public List<Order> Orders;
+        //public List<SimpleOrderViewModel> Orders;
+
+        public List<Order> Orders2;
+        //public List<StateCountViewModel> StateList;
 
         public int selectedDept { get; set; }
 
@@ -31,6 +34,7 @@ namespace DemandOrderSystem.Models.ViewModel
         [DisplayFormat(DataFormatString = "{0:yyyy/MM}", ApplyFormatInEditMode = true)]
         public DateTime SearchDate { get; set; }
 
+        [DisplayName("資訊部室")]
         public IEnumerable<SelectListItem> DeptList
         {
             get { return new SelectList(_deptName, "Id", "Name"); }
