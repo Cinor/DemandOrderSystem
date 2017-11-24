@@ -358,10 +358,9 @@ namespace DemandOrderSystem.Library
             return viewclass;
         }
 
-        
 
         /// <summary>
-        /// 取得SevenViewModel項目
+        /// 撤件明細
         /// </summary>
         /// <param name="caseCloseDate">結案日</param>
         /// <param name="dischargeDate">撤件日期</param>
@@ -373,28 +372,22 @@ namespace DemandOrderSystem.Library
             DataTable orderDt = new DataTable();
 
             orderDt = dBService.getSevenTable(caseCloseDate, dischargeDate);
-             _Table = orderDt.ToList<TableSevenViewModel>();
+
+            _Table = (from dt in orderDt.AsEnumerable()
+                     select new TableSevenViewModel
+                     {
+                         OrderID = dt.Field<string>("需求單號"),
+                         ApplyDept = dt.Field<string>("申請部室"),
+                         ApplySec = dt.Field<string>("申請課別"),
+                         Applicant = dt.Field<string>("申請人"),
+                         OrderName = dt.Field<string>("需求單主旨"),
+                         DischargeDate = dt.Field<DateTime?>("撤件日期")
+                     }).ToList();
 
             if (!string.IsNullOrWhiteSpace(applyDept))
             {
                 _Table = _Table.Where(o => o.ApplyDept == applyDept).ToList();
             }
-
-            return _Table;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="caseCloseDate">結案日</param>
-        /// <param name="dischargeDate">撤件日期</param>
-        /// <param name="orderbyID">需求單號</param>
-        /// <returns></returns>
-        public List<TableSevenViewModel> GetTableSevenViewModelByID(string caseCloseDate, string dischargeDate, string orderbyID)
-        {
-            var _Table = GetTableSevenViewModel(caseCloseDate, dischargeDate, "");
-
-            _Table = _Table.Where(o => o.OrderID.Contains(orderbyID)).ToList();
 
             return _Table;
         }

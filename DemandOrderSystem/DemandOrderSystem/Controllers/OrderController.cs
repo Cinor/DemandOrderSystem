@@ -1,7 +1,7 @@
 ﻿///需求單表Controller
 ///表一 TableOne
 ///表二 TableTwo 以此類推
-///表三 
+///表三 TableThree 
 ///表四 TableFour
 ///表五 TableFive
 ///表六 TableSix
@@ -181,9 +181,9 @@ namespace DemandOrderSystem.Controllers
 
             if (!String.IsNullOrEmpty(orderID))
             {
-                _Table = dbLibrary.GetTableSevenViewModelByID(caseCloseDate, dischargeDate, orderID);
+                _Table = dbLibrary.GetTableSevenViewModel("","","").Where(o => o.OrderID.Contains(orderID)).ToList();
                 TempData["TempDataTest"] = _Table.Count.ToString();
-                ViewBag.Room = item.Select(x => new SelectListItem() { Text = x.ToString(), Value = x.ToString() });
+                ViewBag.applyDept = item.Select(x => new SelectListItem() { Text = x.ToString(), Value = x.ToString() });
                 return View(_Table.ToPagedList(page ?? 1, pageSize));
             }
 
