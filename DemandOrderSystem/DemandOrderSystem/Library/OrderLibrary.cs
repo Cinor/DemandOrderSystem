@@ -139,6 +139,35 @@ namespace DemandOrderSystem.Library
         }
 
         /// <summary>
+        /// 已交付UAT但尚未結案之明細表
+        /// </summary>
+        /// <param name="orderState">需求單狀態</param>
+        /// <param name="acceptionTestStartDate_0">驗收開始日_範圍起</param>
+        /// <param name="acceptionTestStartDate_1">驗收開始日_範圍結</param>
+        /// <param name="applyDept">申請人部室</param>
+        /// <returns></returns>
+        public List<TableThreeViewModel> GetTableThreeViewModel(string orderState, string acceptionTestStartDate_0, string acceptionTestStartDate_1, string applyDept)
+        {
+
+            var Table = (from odt in getOrderDatas()
+                         where (!string.IsNullOrWhiteSpace(orderState) ? odt.State == orderState : true)
+                         & (!string.IsNullOrWhiteSpace(acceptionTestStartDate_0) ? odt.AcceptionTestStartDate >= Convert.ToDateTime(acceptionTestStartDate_0) : true)
+                         && (!string.IsNullOrWhiteSpace(acceptionTestStartDate_1) ? odt.AcceptionTestStartDate <= Convert.ToDateTime(acceptionTestStartDate_1) : true)
+                         & (!string.IsNullOrWhiteSpace(applyDept) ? odt.ApplyDept == applyDept : true)
+                         select new TableThreeViewModel
+                         {
+                             OrderID = odt.OrderID,
+                             OrderName = odt.OrderName,
+                             Applicant = odt.Applicant,
+                             ApplyDept = odt.ApplyDept,
+                             DemandDutyPerson = odt.DemandDutyPerson,
+                             AcceptionTestStartDate = odt.AcceptionTestStartDate
+                         }).ToList();
+
+            return Table;
+        }
+
+        /// <summary>
         /// 取得需求單分類統計表依傳入啟始結束日查詢
         /// </summary>
         /// <param name="startTime">查詢範圍日開始</param>
@@ -271,38 +300,6 @@ namespace DemandOrderSystem.Library
             return result;
         }
 
-
-
-        /// <summary>
-        /// 取得ThreeViewModel項目
-        /// </summary>
-        /// <param name="orderState">需求單狀態</param>
-        /// <param name="acceptionTestStartDate_0">驗收開始日_範圍起</param>
-        /// <param name="acceptionTestStartDate_1">驗收開始日_範圍結</param>
-        /// <param name="applyDept">申請人部室</param>
-        /// <returns></returns>
-        public List<TableThreeViewModel> GetTableThreeViewModel(string orderState, string acceptionTestStartDate_0, string acceptionTestStartDate_1, string applyDept)
-        {
-
-            var Table = (from odt in getOrderDatas()
-                         where (!string.IsNullOrWhiteSpace(orderState) ? odt.State == orderState : true)
-                         & (!string.IsNullOrWhiteSpace(acceptionTestStartDate_0) ? odt.AcceptionTestStartDate >= Convert.ToDateTime(acceptionTestStartDate_0) : true)
-                         && (!string.IsNullOrWhiteSpace(acceptionTestStartDate_1) ? odt.AcceptionTestStartDate <= Convert.ToDateTime(acceptionTestStartDate_1) : true)
-                         & (!string.IsNullOrWhiteSpace(applyDept) ? odt.ApplyDept == applyDept : true)
-                         select new TableThreeViewModel
-                         {
-                             OrderID = odt.OrderID,
-                             OrderName = odt.OrderName,
-                             Applicant = odt.Applicant,
-                             ApplyDept = odt.ApplyDept,
-                             DemandDutyPerson = odt.DemandDutyPerson,
-                             AcceptionTestStartDate = odt.AcceptionTestStartDate
-                         }).ToList();
-
-            return Table;
-        }
-
-
         /// <summary>
         /// 各業務線別逾預估完成日未結案件數統計及明細表
         /// </summary>
@@ -431,23 +428,6 @@ namespace DemandOrderSystem.Library
 
             return Table;
         }
-
-        /// <summary>
-        /// 已完成驗收但尚未結案-依需求單號查詢
-        /// </summary>
-        /// <param name="orderState">需求單狀態</param>
-        /// <param name="acceptionTestFinishDate_1">驗收結束日_範圍結</param>
-        /// <param name="orderID">需求單號</param>
-        /// <returns></returns>
-        public List<TableEightViewModel> GetTableEightViewModelOrderID(string orderState, string orderID)
-        {
-            List<TableEightViewModel> _Table = new List<TableEightViewModel>();
-
-            _Table = GetTableEightViewModel(orderState, null, null, "").Where(o => o.OrderID.Contains(orderID)).ToList();
-
-            return _Table;
-        }
-
 
     }
 }
