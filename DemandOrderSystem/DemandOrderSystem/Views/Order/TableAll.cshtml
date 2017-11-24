@@ -39,138 +39,142 @@
 }
 
 
-<div class="col-md-12" style="overflow: auto">
-    <table class="table table-bordered">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ApplyDept)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ApplySec)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().Applicant)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().OrderID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().OrderName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ITDept)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().State)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ExpectCompleteDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ExpectRecieveDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ExpectStartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ExpectFinishDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().AcceptionTestStartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().AcceptionTestFinishDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().CaseCloseDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().MaintainLine)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().MaintainITDept)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().MaintainITSec)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().DemandDutyPerson)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ClassNo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ClassName)
-            </th>
-        </tr>
+<div class=" col-md-12" style="overflow: auto;padding:0px;height:600px;">
+    <div>
+        <table class="table table-bordered">
+            <thead style="white-space:nowrap">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ApplyDept)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ApplySec)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().Applicant)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().OrderID)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().OrderName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ITDept)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().State)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ExpectCompleteDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ExpectRecieveDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ExpectStartDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ExpectFinishDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().AcceptionTestStartDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().AcceptionTestFinishDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().CaseCloseDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().MaintainLine)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().MaintainITDept)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().MaintainITSec)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().DemandDutyPerson)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ClassNo)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.orderList.FirstOrDefault().ClassName)
+                    </th>
+                </tr>
+            </thead>
 
-        @foreach (var item in Model.orderList)
+            @foreach (var item in Model.orderList)
             {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ApplyDept)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ApplySec)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Applicant)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.OrderID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.OrderName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ITDept)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.State)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ExpectCompleteDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ExpectRecieveDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ExpectStartDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ExpectFinishDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AcceptionTestStartDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AcceptionTestFinishDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CaseCloseDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MaintainLine)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MaintainITDept)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MaintainITSec)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DemandDutyPerson)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ClassNo)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ClassName)
-                </td>
-            </tr>
-        }
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ApplyDept)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ApplySec)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Applicant)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrderID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrderName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ITDept)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.State)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ExpectCompleteDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ExpectRecieveDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ExpectStartDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ExpectFinishDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AcceptionTestStartDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AcceptionTestFinishDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CaseCloseDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MaintainLine)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MaintainITDept)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MaintainITSec)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DemandDutyPerson)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ClassNo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ClassName)
+                    </td>
+                </tr>
+            }
 
-    </table>
+        </table>
+    </div>
 </div>
 
 
