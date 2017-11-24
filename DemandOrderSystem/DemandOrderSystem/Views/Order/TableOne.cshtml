@@ -1,18 +1,507 @@
-﻿<!--  需求單表一  -->
-<!-- 撰寫人:林紹瑾 -->
-@using DemandOrderSystem.Models.ViewModel
-@model TableOneViewModel
+﻿@using DemandOrderSystem.Models.ViewModel
+@*@model DemandOrder.Models.OrdersCountViewModel*@
+@model DemandOrderSystem.Models.ViewModel.TableOneViewModel
+
+@section scripts{
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+        google.charts.load('current', { packages: ['corechart', 'line'] });
+
+        google.charts.setOnLoadCallback(drawLogScales);
+
+        google.charts.setOnLoadCallback(DrawFinishPercentBarChart);
+
+        selectDept = @Model.selectedDept;
+
+        if (selectDept == 0) {
+            google.charts.setOnLoadCallback(drawDeptOrderPieChart);
+        }
+
+        function drawLogScales() {
+            var data = new google.visualization.DataTable();
+            //data.addColumn('number', 'X');
+            data.addColumn('string', '年月');
+            data.addColumn('number', '受理');
+            data.addColumn('number', '結案');
+            data.addColumn('number', '未完成');
+            data.addColumn('number', '累計未完成');
+
+            @{
+
+                for (int i = 0; i < 12; i++)
+                {
+                    if (Model.SearchDate.AddMonths(i).Year == DateTime.Now.Year && Model.SearchDate.AddMonths(i).Month == DateTime.Now.Month)
+                    {
+                        break;
+                    }
+
+                    //@:tempX = @string.Format("{0}年{1}月", DateTime.Now.AddMonths(i).Year, DateTime.Now.AddMonths(i).Month);
+
+                    @:tempX = @Model.SearchDate.AddMonths(i).Year + "年" + @Model.SearchDate.AddMonths(i).Month + "月"
+
+                    @:tempY = @Model.Orders2.Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.AddMonths(i).Month && model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.AddMonths(i).Year)).Count();
+
+                    @:tempZ = @Model.Orders2.Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.AddMonths(i).Month && model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.AddMonths(i).Year)).Where(model => model.State == "結案").Count();
+
+                    @:tempW = @Model.Orders2.Where(model => model.State != "結案").Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.AddMonths(i).Month && model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.AddMonths(i).Year)).Count();
+
+                    @:tempV = @Model.Orders2.Where(model => model.State != "結案").Where(model => model.ExpectRecieveDate.GetValueOrDefault().Date < Model.SearchDate.AddMonths(i).Date).Count();
+
+                    @:temp = [tempX, tempY, tempZ, tempW, tempV];
+
+                    @:data.addRows([temp]);
+                }
+            }
+
+            var options = {
+                title: '需求單總攬',
+                width: 700,
+                height: 400,
+                curveType: 'function',
+                hAxis: {
+                    title: '年月份',
+                    logScale: true
+                },
+                vAxis: {
+                    title: '數量',
+                    logScale: false,
+                    minValue: 0
+                },
+                colors: ['#a52714', '#097138', 'black', 'blue']
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+
+        function DrawFinishPercentBarChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', '部室');
+            data.addColumn('number', 'Percent');
+            @{
+                var group = Model.Orders2.Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Date > Model.SearchDate.Date || (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.Month)))
+                                        .Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Date < Model.SearchDate.AddYears(1).AddMonths(-1).Date || (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.AddYears(1).AddMonths(-1).Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.AddYears(1).AddMonths(-1).Month)))
+                                        .GroupBy(model => model.ITDept);
+
+                foreach (var g in group)
+                {
+                    var deptName = string.Format("{0}", g.First().ITDept.ToString());
+
+                    @:var tempITDept = '@deptName';
+
+                    @:console.log(tempITDept);
+
+                    @:console.log('結案' + @g.Where(model => model.State == "結案").Count());
+
+                    var percent = (g.Where(model => model.State == "結案").Count() * 100 / g.Count());
+
+                    @:tempPercent = @percent;
+
+                    //@:tempColor = 'colors[c]';
+
+                    @:data.addRows([[tempITDept, tempPercent]]);
+                }
+            }
+
+
+            var options = {
+                title: '各部門需求單完成比例',
+                height: 400,
+                width: 700,
+                hAxis: {
+                    title: 'Percent',
+                    minValue: 0,
+                    maxValue: 100
+                },
+                vAxis: {
+                    title: '部門'
+                },
+                colors: ['#ff906b']
+            };
+
+            var chart = new google.visualization.BarChart(document.getElementById('percentChart_div'));
+
+            chart.draw(data, options);
+        }
+
+        function drawDeptOrderPieChart() {
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Dept');
+            data.addColumn('number', 'OrderCount');
+
+            @{
+
+                foreach (var g in group)
+                {
+                    var deptName = string.Format("{0}", g.First().ITDept.ToString());
+
+                    @:var tempITDept = '@deptName';
+
+                    @:console.log(tempITDept);
+
+                    var count = g.Count();
+
+                    @:tempCount = @count;
+
+                    @:console.log(tempCount);
+
+                    //@:tempColor = 'colors[c]';
+
+                    @:data.addRows([[tempITDept, tempCount]]);
+                }
+            }
+
+            var options = {
+                title: '需求單各部門比例',
+                height: 400,
+                width: 700,
+                pieHole: 0.4
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('dept_order_percent_pie_chart_div'));
+
+            chart.draw(data, options);
+        }
+
+        //add daypicker at searchdate
+        $.noConflict();
+        $(document).ready(function () {
+            $("#datetimepicker3").datepicker({
+                maxDate: 'now'
+            });
+        });
+
+    </script>
+}
+
 
 @{
-    ViewBag.Title = "TableOne";
+    ViewBag.Title = "需求單資訊中心表單";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>TableOne</h2>
+<h2 style="font-family:微軟正黑體">需求單受理狀態</h2>
 
-@{ 
-    foreach (var item in Model.Orders)
+@*order 部門選擇*@
+<div class="row">
+
+    @using (Html.BeginForm())
     {
-        <th>@item.OrderName</th>
-        <br />
+        <div class="col-md-4 row">
+
+            @*@Html.DropDownList("Dept", Model.DeptList, new { @class="form-control"})*@
+            @Html.LabelFor(model => model.DeptList);
+
+            @Html.DropDownList("selectedDept", Model.DeptList, new { @class = "form-control" })
+
+            @Html.HiddenFor(model => model.selectedDept)
+
+            <input type="hidden" id="deptSelect" name="deptSelect" />
+
+            @Html.LabelFor(model => model.SearchDate)
+
+            @Html.EditorFor(model => model.SearchDate, "{0:yyyy-MM-dd}", new { htmlAttributes = new { @id = "datetimepicker3", @class = "form-control", @Value = Model.SearchDate.ToString("yyyy-MM-dd"), @Max = DateTime.Now.AddMonths(-1).ToString("yyyy/MM/dd") } })
+
+            @*@Html.TextBoxFor(model => model.SearchDate, "{0:yyyy/MM}", new { @id = "datetimepicker4", @class = "dateInput", @placeholder = "plz input date", @Value = DateTime.Now.AddYears(-1).ToString("yyyy/MM") })*@
+
+            @* 無法work remote valid *@
+            @*@Html.ValidationMessageFor(model => model.SearchDate,"日期必須在這個月以前")*@
+
+            <input type="submit" value="確認" class="btn btn-info" />
+
+        </div>
     }
-}
+
+    @*<div class="col-md-offset-10">
+
+            <input type="button" value="匯出Excel"/>
+
+        </div>*@
+
+</div>
+
+<br />
+
+<div>
+    <table class="table" style="font-family:微軟正黑體">
+        <tr bgcolor="#5f89cc" style="color:white">
+            <th>
+                @Html.DisplayName("需求單")
+            </th>
+
+            @{
+                var overAYear = (DateTime.Now - Model.SearchDate).Days > 365 ? true : false;
+
+
+                for (int i = 0; i < 12; i++)
+                {
+                    if (Model.SearchDate.AddMonths(i).Year == DateTime.Now.Year && Model.SearchDate.AddMonths(i).Month == DateTime.Now.Month)
+                    {
+                        break;
+                    }
+
+                    <th align="center">
+                        @Html.DisplayName(string.Format("{0}年{1}月", Model.SearchDate.AddMonths(i).Year, Model.SearchDate.AddMonths(i).Month))
+                    </th>
+                }
+
+            }
+        </tr>
+
+        <tr bgcolor="#e5ecf9">
+
+            @*state若為 受理就是非結案*@
+            <th>受理</th>
+
+            @{
+                for (int i = 0; i < 12; i++)
+                {
+                    if (Model.SearchDate.AddMonths(i).Year == DateTime.Now.Year && Model.SearchDate.AddMonths(i).Month == DateTime.Now.Month)
+                    {
+                        break;
+                    }
+
+                    <td align="center">
+
+                        @*測試*@
+                        @*@{ var count = Model.Orders.Where(model => (model.ExpectStartDate.Month == Model.SearchDate.AddMonths(i).Month && model.ExpectStartDate.Year == Model.SearchDate.AddMonths(i).Year))*@
+                        @*.Count();}*@
+
+                        @{ var count = Model.Orders2.Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.AddMonths(i).Month && model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.AddMonths(i).Year))
+                                  .Count();}
+
+                        @*@string.Format("{0}", count) |*@
+
+
+                        @Html.ActionLink(string.Format("{0}", count), "MonthDatas", new MonthDataViewModel()
+                       {
+                           DataMonth = Model.SearchDate.AddMonths(i),
+                           State = "受理",
+                           DeptCode = Model.selectedDept
+                       })
+
+                    </td>
+                            }
+            }
+
+        </tr>
+
+        <tr bgcolor="#c1d8ff">
+
+            <th>結案</th>
+
+            @{
+                for (int i = 0; i < 12; i++)
+                {
+                    if (Model.SearchDate.AddMonths(i).Year == DateTime.Now.Year && Model.SearchDate.AddMonths(i).Month == DateTime.Now.Month)
+                    {
+                        break;
+                    }
+
+                    <td align="center">
+
+                        @*測試*@
+                        @*@{ var count = Model.Orders.Where(model => model.State == "結案")*@
+                        @*.Where(model => (model.ExpectStartDate.Month == Model.SearchDate.AddMonths(i).Month && model.ExpectStartDate.Year == Model.SearchDate.AddMonths(i).Year))*@
+                        @*.Count();}*@
+
+                        @{ var count = Model.Orders2.Where(model => model.State == "結案")
+                                       .Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.AddMonths(i).Month && model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.AddMonths(i).Year))
+                                       .Count();}
+
+                        @*@string.Format("{0}", count) |*@
+
+                        
+                        @Html.ActionLink(string.Format("{0}", count), "MonthDatas", new MonthDataViewModel
+                       {
+                           DataMonth = Model.SearchDate.AddMonths(i),
+                           State = "結案",
+                           DeptCode = Model.selectedDept
+                       })
+
+                    </td>
+                            }
+            }
+
+        </tr>
+
+        <tr bgcolor="#e5ecf9">
+
+            <th>未完成</th>
+
+            @{
+                for (int i = 0; i < 12; i++)
+                {
+                    if (Model.SearchDate.AddMonths(i).Year == DateTime.Now.Year && Model.SearchDate.AddMonths(i).Month == DateTime.Now.Month)
+                    {
+                        break;
+                    }
+
+                    <td align="center">
+
+                        @*測試*@
+                        @*@{ var count = Model.Orders.Where(model => model.State != "結案")*@
+                        @*.Where(model => (model.ExpectStartDate.Month == Model.SearchDate.AddMonths(i).Month && model.ExpectStartDate.Year == Model.SearchDate.AddMonths(i).Year))*@
+                        @*.Count();}*@
+
+                        @{ var count = Model.Orders2.Where(model => model.State != "結案")
+                                        .Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.AddMonths(i).Month && model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.AddMonths(i).Year))
+                                        .Count();}
+
+                        @*@string.Format("{0}", count)|*@
+
+                        
+                        @Html.ActionLink(string.Format("{0}", count), "MonthDatas", new MonthDataViewModel
+                       {
+                           DataMonth = Model.SearchDate.AddMonths(i),
+                           State = "未完成",
+                           DeptCode = Model.selectedDept
+                       })
+
+                    </td>
+                            }
+            }
+
+        </tr>
+
+        <tr bgcolor="#c1d8ff">
+
+            <th>累計未完成</th>
+
+            @{
+                for (int i = 0; i < 12; i++)
+                {
+                    if (Model.SearchDate.AddMonths(i).Year == DateTime.Now.Year && Model.SearchDate.AddMonths(i).Month == DateTime.Now.Month)
+                    {
+                        break;
+                    }
+
+                    <td align="center">
+
+                        @*測試*@
+                        @*@{ var count = Model.Orders.Where(model => model.State != "結案")*@
+                        @*.Where(model => model.ExpectStartDate.Date < Model.SearchDate.AddMonths(i).Date || (model.ExpectStartDate.Year == Model.SearchDate.AddMonths(i).Year && model.ExpectStartDate.Month == Model.SearchDate.AddMonths(i).Month))*@
+                        @*.Count();}*@
+                        @* orderviewmodel expectRecieveDate = simpleorderviewmodel expectstartdate *@
+                        @{ var count = Model.Orders2.Where(model => model.State != "結案")
+                                        .Where(model => model.ExpectRecieveDate.GetValueOrDefault().Date < Model.SearchDate.AddMonths(i).Date || (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.AddMonths(i).Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.AddMonths(i).Month))
+                                        .Count();}
+
+                        @*@string.Format("{0}", count)|*@
+
+                        
+                        @Html.ActionLink(string.Format("{0}", count), "MonthDatas", new MonthDataViewModel
+                       {
+                           DataMonth = Model.SearchDate.AddMonths(i),
+                           State = "累計未完成",
+                           DeptCode = Model.selectedDept
+                       })
+
+                    </td>
+                            }
+            }
+
+        </tr>
+
+    </table>
+</div>
+
+<br />
+
+<table class="table">
+
+    <tr bgcolor="#5f89cc" style="color:white">
+        <th>
+            @Html.DisplayName("統計")
+        </th>
+
+        <th>
+            @Html.DisplayName("受理月份")
+        </th>
+
+        <th>
+            @Html.DisplayName("總收件")
+        </th>
+
+        <th>
+            @Html.DisplayName("每月平均")
+        </th>
+    </tr>
+
+    <tr bgcolor="#e5ecf9">
+
+        <th>受理件數</th>
+
+        <td>
+            @string.Format("{0}/{1}~{2}/{3}", Model.SearchDate.Year, Model.SearchDate.Month, Model.SearchDate.AddYears(1).AddMonths(-1).Year, Model.SearchDate.AddYears(1).AddMonths(-1).Month)
+        </td>
+
+        <td>
+            @* 測試 *@
+            @*@{ var total = Model.Orders.Where(model => (model.ExpectStartDate.Date > Model.SearchDate.Date || (model.ExpectStartDate.Year == Model.SearchDate.Year && model.ExpectStartDate.Month == Model.SearchDate.Month))).Where(model => (model.ExpectStartDate.Date < Model.SearchDate.AddYears(1).AddMonths(-1).Date || (model.ExpectStartDate.Year == Model.SearchDate.AddYears(1).AddMonths(-1).Year && model.ExpectStartDate.Month == Model.SearchDate.AddYears(1).AddMonths(-1).Month))).Count();}*@
+
+            @{ var total = Model.Orders2.Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Date > Model.SearchDate.Date || (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.Month))).Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Date < Model.SearchDate.AddYears(1).AddMonths(-1).Date || (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.AddYears(1).AddMonths(-1).Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.AddYears(1).AddMonths(-1).Month))).Count();}
+
+            @total
+            @*@Model.Orders.Where(model => (model.ExpectStartDate.Date > Model.SearchDate.Date || (model.ExpectStartDate.Year == Model.SearchDate.Year && model.ExpectStartDate.Month == Model.SearchDate.Month))).Where(model => (model.ExpectStartDate.Date < Model.SearchDate.Date || (model.ExpectStartDate.Year == Model.SearchDate.Year && model.ExpectStartDate.Month == Model.SearchDate.Month))).Count()*@
+        </td>
+
+        <td>
+            @{ var ave = total / 12;}
+
+            @ave
+
+            @*@Model.Orders.Where(model => (model.ExpectStartDate.Date > Model.SearchDate.Date || (model.ExpectStartDate.Year == Model.SearchDate.Year && model.ExpectStartDate.Month == Model.SearchDate.Month))).Where(model => (model.ExpectStartDate.Date < Model.SearchDate.Date || (model.ExpectStartDate.Year == Model.SearchDate.Year && model.ExpectStartDate.Month == Model.SearchDate.Month))).Count()/12;*@
+        </td>
+
+    </tr>
+
+    <tr bgcolor="#c1d8ff">
+
+        <th>完成件數</th>
+
+        <td>
+            @string.Format("{0}/{1}~{2}/{3}", Model.SearchDate.Year, Model.SearchDate.Month, Model.SearchDate.AddYears(1).AddMonths(-1).Year, Model.SearchDate.AddYears(1).AddMonths(-1).Month)
+        </td>
+
+        <td>
+            @* 測試 *@
+            @{
+//total = Model.Orders.Where(model => (model.ExpectStartDate.Date > Model.SearchDate.Date || (model.ExpectStartDate.Year == Model.SearchDate.Year && model.ExpectStartDate.Month == Model.SearchDate.Month))).Where(model => (model.ExpectStartDate.Date < Model.SearchDate.AddYears(1).AddMonths(-1).Date || (model.ExpectStartDate.Year == Model.SearchDate.AddYears(1).AddMonths(-1).Year && model.ExpectStartDate.Month == Model.SearchDate.AddYears(1).AddMonths(-1).Month))).Where(model => model.State == "結案").Count();
+            }
+
+            @{
+                total = Model.Orders2.Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Date > Model.SearchDate.Date || (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.Month))).Where(model => (model.ExpectRecieveDate.GetValueOrDefault().Date < Model.SearchDate.AddYears(1).AddMonths(-1).Date || (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.AddYears(1).AddMonths(-1).Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.AddYears(1).AddMonths(-1).Month))).Where(model => model.State == "結案").Count();
+            }
+
+            @total
+        </td>
+
+        <td>
+            @{ ave = total / 12;}
+
+            @ave
+        </td>
+
+    </tr>
+
+</table>
+
+
+@* 繪圖 *@
+<div class="row">
+    <div class="container">
+        <div id="chart_div" class="col-md-7 col-sm-12"></div>
+    </div>
+
+    <br />
+
+    <div id="dept_order_percent_pie_chart_div" class="col-md-7 col-sm-12"></div>
+
+    <br />
+
+    <div id="percentChart_div" class="col-md-7 col-sm-12"></div>
+</div>
+

@@ -15,6 +15,7 @@ using System.Web.Mvc;
 using DemandOrderSystem.Library;
 using DemandOrderSystem.Models.ViewModel;
 using PagedList;
+using System.Net;
 
 namespace DemandOrderSystem.Controllers
 {
@@ -29,10 +30,22 @@ namespace DemandOrderSystem.Controllers
         /// <returns></returns>
         public ActionResult TableOne()
         {
-            TableOneViewModel viewModel = new TableOneViewModel
-            {
-                Orders = dbLibrary.getOrderDatas()
-            };
+            TableOneViewModel orders = new TableOneViewModel();
+
+            orders.Orders2 = dbLibrary.getOrderDatas();
+
+            orders.SearchDate = DateTime.Now.AddYears(-1);
+
+            //預設為資訊中心
+            orders.selectedDept = 0;
+
+            return View(orders);
+        }
+
+        [HttpPost]
+        public ActionResult TableOne(TableOneViewModel viewModel)
+        {
+            viewModel.Orders2 = dbLibrary.GetDataByDept(viewModel.selectedDept, viewModel.SearchDate);
 
             return View(viewModel);
         }
@@ -259,7 +272,134 @@ namespace DemandOrderSystem.Controllers
             return View(_Table.ToPagedList(page ?? 1, 20));
         }
 
+        public ActionResult TableTwo(int page = 1)
+        {
+            TableTwoViewModel viewModel = new TableTwoViewModel();
+
+            viewModel.Orders = dbLibrary.getOrderDatas();
+
+            viewModel.SearchDate = DateTime.Now.AddYears(-1);
+
+            var currentPage = page < 1 ? 1 : page;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult TableTwo(TableTwoViewModel viewModel)
+        {
+            viewModel.Orders = dbLibrary.GetDataSearchDate(viewModel.SearchDate);
+
+            TableTwoViewModel newViewModel = new TableTwoViewModel();
+
+            newViewModel.SearchDate = viewModel.SearchDate;
+
+            newViewModel.SelectedDept = viewModel.SelectedDept;
+
+            newViewModel.Orders = dbLibrary.ReturnDataByApplydept(viewModel.Orders, viewModel._applyDeptName[viewModel.SelectedDept]);
+
+            return View(newViewModel);
 
 
+        }
+
+
+        public ActionResult MonthDatas(MonthDataViewModel viewModel)
+        {
+            if (viewModel.DataMonth == null || viewModel.State == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            if (viewModel.ApplyDeptName == null)
+            {
+                //從TableOne連結過來
+                viewModel.Orders = dbLibrary.GetDatasByMonthAndStateAndDept(viewModel.DataMonth, viewModel.State, viewModel.DeptCode);
+
+                viewModel.DeptName = dbLibrary.deptName[viewModel.DeptCode];
+            }
+            else
+            {
+                //從TableTwo連結過來
+                viewModel.Orders = dbLibrary.GetDatasByMonthAndStateAndApplydept(viewModel.DataMonth, viewModel.State, viewModel.ApplyDeptName);
+                //viewModel.DeptName = viewModel.ApplyDeptName;
+
+            }
+            //viewModel.DeptName = orderLib.deptName[viewModel.DeptCode];
+
+            ViewData["state"] = viewModel.State;
+
+            ViewData["dataDate"] = viewModel.DataMonth;
+
+            ViewBag.date = viewModel.DataMonth;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ActionName("MonthDatas")]
+        public ActionResult MonthDatasPost(MonthDataViewModel viewModel)
+        {
+            if (viewModel.DataMonth == null || viewModel.State == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            if (viewModel.StrSearch != "" && viewModel.StrSearch != null)
+            {
+                if (viewModel.ApplyDeptName == null)
+                {
+                    //從TableOne連結過來
+                    viewModel.Orders = dbLibrary.GetDatasByMonthAndStateAndDept(viewModel.DataMonth, viewModel.State, viewModel.DeptCode)
+                                                .Where(o => o.OrderName.Contains(viewModel.StrSearch))
+                                                .ToList();
+
+                    viewModel.DeptName = dbLibrary.deptName[viewModel.DeptCode];
+                }
+                else
+                {
+                    //從TableTwo連結過來
+                    viewModel.Orders = dbLibrary.GetDatasByMonthAndStateAndApplydept(viewModel.DataMonth, viewModel.State, viewModel.ApplyDeptName)
+                                                .Where(o => o.OrderName.Contains(viewModel.StrSearch))
+                                                .ToList();
+
+                }
+            }
+            else
+            {
+                if (viewModel.ApplyDeptName == null)
+                {
+                    //從TableOne連結過來
+                    viewModel.Orders = dbLibrary.GetDatasByMonthAndStateAndDept(viewModel.DataMonth, viewModel.State, viewModel.DeptCode);
+
+                    viewModel.DeptName = dbLibrary.deptName[viewModel.DeptCode];
+                }
+                else
+                {
+                    //從TableTwo連結過來
+                    viewModel.Orders = dbLibrary.GetDatasByMonthAndStateAndApplydept(viewModel.DataMonth, viewModel.State, viewModel.ApplyDeptName);
+
+                }
+            }
+
+            return View(viewModel);
+        }
+
+        public ActionResult Detail(string orderId)
+        {
+            if (orderId == "")
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var order = dbLibrary.getOrderById(orderId);
+
+            if (order == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(order);
+        }
     }
 }
