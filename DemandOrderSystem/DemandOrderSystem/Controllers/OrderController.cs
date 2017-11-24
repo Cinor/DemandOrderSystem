@@ -191,7 +191,7 @@ namespace DemandOrderSystem.Controllers
             TempData["TempDataTest"] = _Table.Count.ToString();
 
             var item2 = _Table.GroupBy(x => x.ApplyDept).Distinct().ToList();
-            //ViewBag.applyDept = item2.Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() });
+            ViewBag.applyDept = item2.Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() });
 
             if (!string.IsNullOrWhiteSpace(applyDept))
             {
