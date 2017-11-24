@@ -1,30 +1,31 @@
-﻿@model SingleProject.ViewModels.Class6
+﻿@model DemandOrderSystem.Models.ViewModel.TableSixViewModel
 
 @{
-    ViewBag.Title = "Class6";
+    ViewBag.Title = "TableSix";
 }
 
 <h2>各業務線別逾預估完成日未結案件數統計及明細表</h2>
 
 
-@using (Html.BeginForm())
-{
-    <div>
-        <hr />
-        <dl class="dl-horizontal">
-            <dt>
-                @Html.Label("預估完成日小於")
-            </dt>
-            <dd>
-                @Html.TextBox("date", "2017-11-12", new { @class = "form-control", type = "date" })
-            </dd>
-        </dl>
-        <div>
-            <input type="submit" value="查詢" class="btn btn-info" />
+<p>
+    @using (Html.BeginForm())
+    {
+        <div class="row">
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.Label("預估完成日小於")
+                </dt>
+                <dd>
+                    @Html.TextBox("date", "2017-11-12", new { @class = "form-control", type = "date" })
+                </dd>
+            </dl>
+            <div>
+                <input type="submit" value="查詢" class="btn btn-info" />
+            </div>
         </div>
-    </div>
-}
-
+    }
+</p>
 
 
 <table class="table">
@@ -48,25 +49,25 @@
     </tr>
 
     <tr>
-        @foreach (var item in Model.資訊部室)
+        @foreach (var item in Model.ITDept)
         {
             foreach (var list in item.維護類別)
             {
             <tr>
                 <td>
-                    @item.資訊部室
+                    @item.ITDept
                 </td>
                 <td>
-                    @list.維護案或業務線別
+                    @list.MaintainLine
                 </td>
                 <td>
-                    @list.受理
+                    @list.Accepted
                 </td>
                 <td>
-                    @list.驗收
+                    @list.Acceptance
                 </td>
                 <td>
-                    @list.合計
+                    @list.Total
                 </td>
             </tr>
             }
@@ -96,6 +97,6 @@
 
 
     <p>
-        @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-        @Html.ActionLink("Back to List", "Index")
+        @*@Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+        @Html.ActionLink("Back to List", "Index")*@
     </p>

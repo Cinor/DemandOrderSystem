@@ -43,7 +43,7 @@ namespace DemandOrderSystem.Models.ViewModel
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         [DisplayName("撤件日期")]
-        public DateTime? 撤件日期 { get; set; }//撤件日期
+        public DateTime? DischargeDate { get; set; }
 
     }
 }

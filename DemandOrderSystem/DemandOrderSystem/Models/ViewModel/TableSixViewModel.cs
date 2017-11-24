@@ -14,11 +14,20 @@ namespace DemandOrderSystem.Models.ViewModel
         /// </summary>
         public List<Class6Department> ITDept { get; set; }
 
-        public DateTime? date { get; set; }
+        /// <summary>
+        /// 時間
+        /// </summary>
+        public DateTime? Data { get; set; }
 
-        public int Sum_Acceptance { get { return ITDept.Sum(x => x.維護類別.Sum(y => y.驗收)); } }
+        /// <summary>
+        /// 總驗收
+        /// </summary>
+        public int Sum_Acceptance { get { return ITDept.Sum(x => x.維護類別.Sum(y => y.Acceptance)); } }
 
-        public int Sum_Accepted { get { return ITDept.Sum(x => x.維護類別.Sum(y => y.受理)); } }
+        /// <summary>
+        /// 總受理
+        /// </summary>
+        public int Sum_Accepted { get { return ITDept.Sum(x => x.維護類別.Sum(y => y.Accepted)); } }
     }
 
     public class Class6Department
@@ -47,17 +56,17 @@ namespace DemandOrderSystem.Models.ViewModel
         /// <summary>
         /// 受理
         /// </summary>
-        public int 受理 { get; set; }
+        public int Accepted { get; set; }
 
         /// <summary>
         /// 驗收
         /// </summary>
-        public int 驗收 { get; set; }
+        public int Acceptance { get; set; }
 
         /// <summary>
         /// 合計
         /// </summary>
-        public int 合計 { get { return 受理 + 驗收; } }
+        public int Total { get { return Accepted + Acceptance; } }
 
     }
 }

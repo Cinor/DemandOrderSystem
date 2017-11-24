@@ -1,6 +1,12 @@
 ﻿///需求單表Controller
 ///表一 TableOne
 ///表二 TableTwo 以此類推
+///表三 
+///表四 TableFour
+///表五 TableFive
+///表六 TableSix
+///表七 TableSeven
+///表八 TableEight
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +14,7 @@ using System.Web;
 using System.Web.Mvc;
 using DemandOrderSystem.Library;
 using DemandOrderSystem.Models.ViewModel;
+using PagedList;
 
 namespace DemandOrderSystem.Controllers
 {
@@ -86,7 +93,7 @@ namespace DemandOrderSystem.Controllers
         }
 
         /// <summary>
-        /// 
+        /// 各業務線別逾預估完成日未結案件數統計及明細表
         /// </summary>
         /// <param name="date"></param>
         /// <returns></returns>
@@ -96,6 +103,105 @@ namespace DemandOrderSystem.Controllers
 
             return View(view);
         }
+
+        /// <summary>
+        /// 撤件明細
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="caseCloseDate">結案日</param>
+        /// <param name="dischargeDate">撤件日期</param>
+        /// <param name="applyDept">申請部室</param>
+        /// <param name="orderID">需求單號</param>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult TableSeven(int? page, string caseCloseDate, string dischargeDate, string applyDept, string orderID)
+        {
+            var pageSize = 20;
+
+            List<TableSevenViewModel> _Table = new List<TableSevenViewModel>();
+            List<string> item = new List<string>();
+
+            if (!String.IsNullOrEmpty(orderID))
+            {
+                _Table = dbLibrary.GetTableSevenViewModelByID(caseCloseDate, dischargeDate, orderID);
+                TempData["TempDataTest"] = _Table.Count.ToString();
+                ViewBag.Room = item.Select(x => new SelectListItem() { Text = x.ToString(), Value = x.ToString() });
+                return View(_Table.ToPagedList(page ?? 1, pageSize));
+            }
+
+            _Table = dbLibrary.GetTableSevenViewModel(caseCloseDate, dischargeDate, "");
+            TempData["TempDataTest"] = _Table.Count.ToString();
+
+            var item2 = _Table.GroupBy(x => x.ApplyDept).Distinct().ToList();
+            //ViewBag.applyDept = item2.Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() });
+
+            if (!string.IsNullOrWhiteSpace(applyDept))
+            {
+                _Table = _Table.Where(o => o.ApplyDept == applyDept).ToList();
+                TempData["TempDataTest"] = _Table.Count.ToString();
+            }
+
+            return View(_Table.ToPagedList(page ?? 1, pageSize));
+        }
+
+
+        /// <summary>
+        /// 已完成驗收但尚未結案
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="orderState">需求單狀態</param>
+        /// <param name="acceptionTestFinishDate_0">驗收結束日_範圍起</param>
+        /// <param name="acceptionTestFinishDate_1">驗收結束日_範圍結</param>
+        /// <param name="maintainITDept">維護資訊室</param>
+        /// <param name="orderby">排序(沒實裝上)</param>
+        /// <param name="orderID">需求單號</param>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult TableEight(int? page, string orderState, string acceptionTestFinishDate_0, string acceptionTestFinishDate_1, string maintainITDept, string orderby, string orderID)
+        {
+            List<TableEightViewModel> _Table = new List<TableEightViewModel>();
+            List<String> item = new List<String>();
+
+            if (string.IsNullOrWhiteSpace(acceptionTestFinishDate_1))
+            {
+                acceptionTestFinishDate_1 = DateTime.Now.Date.ToString();
+            }
+
+            if (!string.IsNullOrEmpty(orderID))
+            {
+                _Table = dbLibrary.GetTableEightViewModelOrderID(orderState, orderID);
+                TempData["TempDataTest"] = _Table.Count.ToString();
+                ViewBag.maintainITDept = item.Select(x => new SelectListItem() { Text = x.ToString(), Value = x.ToString() });
+                return View(_Table.ToPagedList(page ?? 1, 20));
+            }
+
+            _Table = dbLibrary.GetTableEightViewModel(orderState, acceptionTestFinishDate_0, acceptionTestFinishDate_1, "");
+            TempData["TempDataTest"] = _Table.Count.ToString();
+
+
+            var item2 = _Table.Where(x => x.MaintainITDept != null).GroupBy(x => x.MaintainITDept).Distinct().ToList();
+            ViewBag.maintainITDept = item2.Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() });
+
+            switch (orderby)
+            {
+                case "Information_Room":
+                    return View(_Table.OrderBy(o => o.MaintainITDept).ToPagedList(page ?? 1, 20));
+                case "OrderID":
+                    return View(_Table.OrderBy(o => o.OrderID).ToPagedList(page ?? 1, 20));
+                case "Date":
+                    return View(_Table.OrderBy(o => o.AcceptionTestFinishDate).ToPagedList(page ?? 1, 20));
+            }
+
+            if (!string.IsNullOrWhiteSpace(maintainITDept))
+            {
+                _Table = _Table.Where(o => o.MaintainITDept == maintainITDept).ToList();
+                TempData["TempDataTest"] = _Table.Count.ToString();
+            }
+
+            return View(_Table.ToPagedList(page ?? 1, 20));
+        }
+
+
 
     }
 }

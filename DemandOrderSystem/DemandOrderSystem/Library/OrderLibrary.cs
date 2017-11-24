@@ -272,8 +272,39 @@ namespace DemandOrderSystem.Library
         }
 
 
+
         /// <summary>
-        /// 取得SixViewModel項目
+        /// 取得ThreeViewModel項目
+        /// </summary>
+        /// <param name="orderState">需求單狀態</param>
+        /// <param name="acceptionTestStartDate_0">驗收開始日_範圍起</param>
+        /// <param name="acceptionTestStartDate_1">驗收開始日_範圍結</param>
+        /// <param name="applyDept">申請人部室</param>
+        /// <returns></returns>
+        public List<TableThreeViewModel> GetTableThreeViewModel(string orderState, string acceptionTestStartDate_0, string acceptionTestStartDate_1, string applyDept)
+        {
+
+            var Table = (from odt in getOrderDatas()
+                         where (!string.IsNullOrWhiteSpace(orderState) ? odt.State == orderState : true)
+                         & (!string.IsNullOrWhiteSpace(acceptionTestStartDate_0) ? odt.AcceptionTestStartDate >= Convert.ToDateTime(acceptionTestStartDate_0) : true)
+                         && (!string.IsNullOrWhiteSpace(acceptionTestStartDate_1) ? odt.AcceptionTestStartDate <= Convert.ToDateTime(acceptionTestStartDate_1) : true)
+                         & (!string.IsNullOrWhiteSpace(applyDept) ? odt.ApplyDept == applyDept : true)
+                         select new TableThreeViewModel
+                         {
+                             OrderID = odt.OrderID,
+                             OrderName = odt.OrderName,
+                             Applicant = odt.Applicant,
+                             ApplyDept = odt.ApplyDept,
+                             DemandDutyPerson = odt.DemandDutyPerson,
+                             AcceptionTestStartDate = odt.AcceptionTestStartDate
+                         }).ToList();
+
+            return Table;
+        }
+
+
+        /// <summary>
+        /// 各業務線別逾預估完成日未結案件數統計及明細表
         /// </summary>
         /// <param name="expectFinishDate"></param>
         /// <returns></returns>
@@ -315,8 +346,8 @@ namespace DemandOrderSystem.Library
                                    select new Class6Detail()
                                    {
                                        MaintainLine = i.work_line,
-                                       受理 = j != null ? j.Accepted : 0,
-                                       驗收 = j != null ? j.Acceptance : 0
+                                       Accepted = j != null ? j.Accepted : 0,
+                                       Acceptance = j != null ? j.Acceptance : 0
                                    };
 
                 Department.維護類別 = worklinejoin.ToList();
@@ -329,60 +360,49 @@ namespace DemandOrderSystem.Library
             return viewclass;
         }
 
-        /// <summary>
-        /// 取得ThreeViewModel項目
-        /// </summary>
-        /// <param name="orderState">需求單狀態</param>
-        /// <param name="acceptionTestStartDate_0">驗收開始日_範圍起</param>
-        /// <param name="acceptionTestStartDate_1">驗收開始日_範圍結</param>
-        /// <param name="applyDept">申請人部室</param>
-        /// <returns></returns>
-        public List<TableThreeViewModel> GetTableThreeViewModel(string orderState, string acceptionTestStartDate_0, string acceptionTestStartDate_1, string applyDept)
-        {
-
-            var Table = (from odt in getOrderDatas()
-                         where (!string.IsNullOrWhiteSpace(orderState) ? odt.State == orderState : true)
-                         & (!string.IsNullOrWhiteSpace(acceptionTestStartDate_0) ? odt.AcceptionTestStartDate >= Convert.ToDateTime(acceptionTestStartDate_0) : true)
-                         && (!string.IsNullOrWhiteSpace(acceptionTestStartDate_1) ? odt.AcceptionTestStartDate <= Convert.ToDateTime(acceptionTestStartDate_1) : true)
-                         & (!string.IsNullOrWhiteSpace(applyDept) ? odt.ApplyDept == applyDept : true)
-                         select new TableThreeViewModel
-                         {
-                             OrderID = odt.OrderID,
-                             OrderName = odt.OrderName,
-                             Applicant = odt.Applicant,
-                             ApplyDept = odt.ApplyDept,
-                             DemandDutyPerson = odt.DemandDutyPerson,
-                             AcceptionTestStartDate = odt.AcceptionTestStartDate
-                         }).ToList();
-
-            return Table;
-        }
+        
 
         /// <summary>
         /// 取得SevenViewModel項目
         /// </summary>
-        /// <param name="結案日"></param>
-        /// <param name="撤件日期"></param>
-        /// <param name="申請部室"></param>
+        /// <param name="caseCloseDate">結案日</param>
+        /// <param name="dischargeDate">撤件日期</param>
+        /// <param name="applyDept">申請部室</param>
         /// <returns></returns>
-        public List<TableSevenViewModel> GetTableSevenViewModel(string 結案日, string 撤件日期, string 申請部室)
+        public List<TableSevenViewModel> GetTableSevenViewModel(string caseCloseDate, string dischargeDate, string applyDept)
         {
             List<TableSevenViewModel> _Table = new List<TableSevenViewModel>();
             DataTable orderDt = new DataTable();
 
-            orderDt = dBService.GetTable7_Details(結案日, 撤件日期);
-            _Table = orderDt.ToList<TableSevenViewModel>();
+            orderDt = dBService.getSevenTable(caseCloseDate, dischargeDate);
+             _Table = orderDt.ToList<TableSevenViewModel>();
 
-            if (!string.IsNullOrWhiteSpace(申請部室))
+            if (!string.IsNullOrWhiteSpace(applyDept))
             {
-                _Table = _Table.Where(o => o.Applicant == 申請部室).ToList();
+                _Table = _Table.Where(o => o.ApplyDept == applyDept).ToList();
             }
 
             return _Table;
         }
 
         /// <summary>
-        /// 取得EightViewModel項目
+        /// 
+        /// </summary>
+        /// <param name="caseCloseDate">結案日</param>
+        /// <param name="dischargeDate">撤件日期</param>
+        /// <param name="orderbyID">需求單號</param>
+        /// <returns></returns>
+        public List<TableSevenViewModel> GetTableSevenViewModelByID(string caseCloseDate, string dischargeDate, string orderbyID)
+        {
+            var _Table = GetTableSevenViewModel(caseCloseDate, dischargeDate, "");
+
+            _Table = _Table.Where(o => o.OrderID.Contains(orderbyID)).ToList();
+
+            return _Table;
+        }
+
+        /// <summary>
+        /// 已完成驗收但尚未結案
         /// </summary>
         /// <param name="orderState">需求單狀態</param>
         /// <param name="acceptionTestFinishDate_0">驗收結束日_範圍起</param>
@@ -412,8 +432,21 @@ namespace DemandOrderSystem.Library
             return Table;
         }
 
+        /// <summary>
+        /// 已完成驗收但尚未結案-依需求單號查詢
+        /// </summary>
+        /// <param name="orderState">需求單狀態</param>
+        /// <param name="acceptionTestFinishDate_1">驗收結束日_範圍結</param>
+        /// <param name="orderID">需求單號</param>
+        /// <returns></returns>
+        public List<TableEightViewModel> GetTableEightViewModelOrderID(string orderState, string orderID)
+        {
+            List<TableEightViewModel> _Table = new List<TableEightViewModel>();
 
+            _Table = GetTableEightViewModel(orderState, null, null, "").Where(o => o.OrderID.Contains(orderID)).ToList();
 
+            return _Table;
+        }
 
 
     }

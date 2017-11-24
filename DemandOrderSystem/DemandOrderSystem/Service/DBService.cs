@@ -15,6 +15,8 @@ namespace DemandOrderSystem.Service
 {
     public class DBService
     {
+        private SqlConnection _conn = new SqlConnection(ConfigurationManager.ConnectionStrings["RequireSystemConnectionStrings"].ToString());
+
         /// <summary>
         /// 取得需求單總表
         /// </summary>
@@ -203,13 +205,12 @@ namespace DemandOrderSystem.Service
         /// <summary>
         /// 取得需求單7號之細節項目細節
         /// </summary>
-        /// <param name="結案日">日期以字串搜尋(EX: "2017-10-20")</param>
-        /// <param name="撤件日期">日期以字串搜尋(EX: "2017-10-20")</param>
+        /// <param name="caseCloseDate">結案日(EX: "2017-10-20")</param>
+        /// <param name="dischargeDate">撤件日期(EX: "2017-10-20")</param>
         /// <returns></returns>
-        public DataTable GetTable7_Details(String 結案日, String 撤件日期)
+        public DataTable getSevenTable(string caseCloseDate, string dischargeDate)
         {
-            SqlConnection _conn = new SqlConnection(ConfigurationManager.ConnectionStrings["RequireSystemConnectionStrings"].ToString());
-
+            
             DataTable dt = new DataTable();
 
             using (_conn)
@@ -222,7 +223,7 @@ namespace DemandOrderSystem.Service
                 "LEFT JOIN Project ON REQ.MAProjectID = Project.PrjID " +
                 "LEFT JOIN ApplicantInfo ON REQ.ReqID = ApplicantInfo.ReqID " +
                 "WHERE REQ.ReqID > 'RE200900000' AND " +
-                "(REQ.ReqStatus = '10' AND(REQ.ReqCloseDate > '" + 結案日 + "' OR REQ.ReqCancelDate > '" + 撤件日期 + "')) AND ReqCloseDes NOT LIKE '未符合103/2/5起之申請流程%' " +
+                "(REQ.ReqStatus = '10' AND(REQ.ReqCloseDate > '" + caseCloseDate + "' OR REQ.ReqCancelDate > '" + dischargeDate + "')) AND ReqCloseDes NOT LIKE '未符合103/2/5起之申請流程%' " +
                 "AND REQ.FormType = '1' AND REQ.ITDept IN('12D000','13D000','106000','11L000') AND ApplicantInfo.EmpChiName NOT IN('蔡嘉媛', '陳芳珠') " +
                 "ORDER BY ApplicantInfo.DeptChiName,  ApplicantInfo.UnitChiName";
 

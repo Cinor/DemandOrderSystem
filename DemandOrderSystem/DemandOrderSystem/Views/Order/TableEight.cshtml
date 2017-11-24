@@ -1,6 +1,6 @@
 ﻿@using PagedList;
 @using PagedList.Mvc;
-@model IPagedList<SingleProject.ViewModels.Table8>
+@model IPagedList<DemandOrderSystem.Models.ViewModel.TableEightViewModel>
 
 @{
     ViewBag.Title = "Class 8";
@@ -17,7 +17,7 @@
 
 <p>
     <div class="row">
-        @using (Html.BeginForm("Index", "Class8", FormMethod.Get))
+        @using (Html.BeginForm("TableEight", "Order", FormMethod.Get))
         {
 
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
@@ -25,18 +25,18 @@
                     <div class="form-group">
                         @Html.Label("驗收結束日期大於: ")
                         <div>
-                            @Html.TextBox("Date0", "2013-01-01", new { @class = "form-control", @type = "date" })
+                            @Html.TextBox("acceptionTestFinishDate_0", "2013-01-01", new { @class = "form-control", @type = "date" })
                         </div>
                         @Html.Label("驗收結束日期小於: ")
                         <div>
-                            @Html.TextBox("Date", "2017-12-31", new { @class = "form-control", @type = "date" })
+                            @Html.TextBox("acceptionTestFinishDate_1", "2017-12-31", new { @class = "form-control", @type = "date" })
                         </div>
 
                         @Html.Label("需求單號查詢: ")
                         <div>
-                            @Html.TextBox("SearchString", "", new { @class = "form-control" })
-
-                            @*@Html.Label("狀態: ") @Html.DropDownList("type", items, "", new { @class = "form-control" })*@
+                            @Html.TextBox("orderID", "", new { @class = "form-control" })
+                            <br />
+                            @Html.Label("狀態: ") @Html.DropDownList("orderState", items, "", new { @class = "form-control" })
                         </div>
                         <br />
                         <input type="submit" value="查詢" class="btn btn-info" />
@@ -48,7 +48,7 @@
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <div>
                     <div>
-                        @Html.Label("資訊室: ") @Html.DropDownList("Room", null, "", new { @class = "form-control" })
+                        @Html.Label("資訊室: ") @Html.DropDownList("maintainITDept", null, "", new { @class = "form-control" })
                     </div>
                     @*@Html.Label("Order By: ")
                     <div>
@@ -56,13 +56,6 @@
                         @Html.RadioButton("orderby", "OrderID") @Html.Label("需求單號")
                         @Html.RadioButton("orderby", "Date") @Html.Label("驗收結束日")
                     </div>*@
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                <div >
-                    <div>
-                        @Html.ActionLink("匯出查詢結果至Excel檔案", "OutExcel", new { type = Request.Params["type"], date0 = Request.Params["Date0"], date = Request.Params["Date"] ,Room = Request.Params["Room"] }, new { @class = "btn btn-info", })
-                    </div>
                 </div>
             </div>
         }
@@ -73,25 +66,25 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().資訊室)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().MaintainITDept)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().資訊課)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().MaintainITSec)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().需求單負責人)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().DemandDutyPerson)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().需求單號)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().OrderID)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().需求單主旨)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().OrderName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().狀態)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().State)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().驗收結束日)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().AcceptionTestFinishDate)
         </th>
         <th></th>
     </tr>
@@ -100,29 +93,29 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.資訊室)
+                @Html.DisplayFor(modelItem => item.MaintainITDept)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.資訊課)
+                @Html.DisplayFor(modelItem => item.MaintainITSec)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.需求單負責人)
+                @Html.DisplayFor(modelItem => item.DemandDutyPerson)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.需求單號)
+                @Html.DisplayFor(modelItem => item.OrderID)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.需求單主旨)
+                @Html.DisplayFor(modelItem => item.OrderName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.狀態)
+                @Html.DisplayFor(modelItem => item.State)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.驗收結束日)
+                @Html.DisplayFor(modelItem => item.AcceptionTestFinishDate)
             </td>
             <td>
-                @Html.ActionLink("Details", "Details", new { 需求單號 = item.需求單號 }) |
-                @Html.ActionLink("Edit", "Edit", new { 需求單號 = item.需求單號 })
+                @Html.ActionLink("Details", "Details", new { 需求單號 = item.OrderID }) |
+                @Html.ActionLink("Edit", "Edit", new { 需求單號 = item.OrderID })
             </td>
         </tr>
     }
@@ -130,11 +123,11 @@
 </table>
 
 <form method="get">
-    @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page })
-+ "&Date0=" + Request.Params["Date0"]
-+ "&Date=" + Request.Params["Date"]
-+ "&type=" + Request.Params["type"]
-+ "&Room=" + Request.Params["Room"]
-+ "&SearchString=" + Request.Params["SearchString"]
+    @Html.PagedListPager((IPagedList)Model, page => Url.Action("TableEight", new { page })
++ "&acceptionTestFinishDate_0=" + Request.Params["acceptionTestFinishDate_0"]
++ "&acceptionTestFinishDate_1=" + Request.Params["acceptionTestFinishDate_1"]
++ "&orderState=" + Request.Params["orderState"]
++ "&maintainITDept=" + Request.Params["maintainITDept"]
++ "&orderID=" + Request.Params["orderID"]
 + "&orderby=" + Request.Params["orderby"])
 </form>
