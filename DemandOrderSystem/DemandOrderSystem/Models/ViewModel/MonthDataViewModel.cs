@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PagedList;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -21,6 +22,8 @@ namespace DemandOrderSystem.Models.ViewModel
 
         public int Page { get; set; } = 1;
 
-        public List<Order> Orders { get; set; }
+        //public List<Order> Orders { get; set; }
+
+        public IPagedList<Order> Orders { get; set; }
     }
 }

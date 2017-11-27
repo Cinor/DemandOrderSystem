@@ -1,6 +1,7 @@
 ﻿@model DemandOrderSystem.Models.ViewModel.MonthDataViewModel
 @using PagedList
 @using PagedList.Mvc
+@using DemandOrderSystem.Models.ViewModel
 @*@model IPagedList<DemandOrder.Models.SimpleOrderViewModel>*@
 @{
     ViewBag.Title = "MonthDatas";
@@ -199,6 +200,16 @@
         </tr>
     }
 </table>
+
+@Html.PagedListPager((IPagedList)Model.Orders, page => Url.Action("MonthDatas", new MonthDataViewModel {
+    Page = page,
+    State = Model.State,
+    DataMonth = Model.DataMonth,
+    DeptCode = Model.DeptCode,
+    ApplyDeptName = Model.ApplyDeptName,
+    StrSearch = Model.StrSearch
+}))
+
 @*<div>
 
         @{
