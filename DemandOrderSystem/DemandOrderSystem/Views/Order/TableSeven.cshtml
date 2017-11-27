@@ -112,8 +112,7 @@
                 @Html.DisplayFor(modelItem => item.DischargeDate)
             </td>
             <td>
-                @*@Html.ActionLink("Details", "Details", "Class7", new { 需求單號 = item.需求單號 }) |*@
-                @*@Html.ActionLink("Edit", "Edit", new { 需求單號 = item.需求單號 })*@
+                @Html.ActionLink("Details", "Detail", new { orderId = item.OrderID }) 
             </td>
         </tr>
     }

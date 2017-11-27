@@ -15,7 +15,6 @@ namespace DemandOrderSystem.Service
 {
     public class DBService
     {
-        private SqlConnection _conn = new SqlConnection(ConfigurationManager.ConnectionStrings["RequireSystemConnectionStrings"].ToString());
 
         /// <summary>
         /// 取得需求單總表
@@ -210,7 +209,9 @@ namespace DemandOrderSystem.Service
         /// <returns></returns>
         public DataTable getSevenTable(string caseCloseDate, string dischargeDate)
         {
-            
+
+            SqlConnection _conn = new SqlConnection(ConfigurationManager.ConnectionStrings["RequireSystemConnectionStrings"].ToString());
+
             DataTable dt = new DataTable();
 
             using (_conn)

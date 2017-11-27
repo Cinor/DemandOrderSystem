@@ -35,8 +35,6 @@
                         @Html.Label("需求單號查詢: ")
                         <div>
                             @Html.TextBox("orderID", "", new { @class = "form-control" })
-                            <br />
-                            @Html.Label("狀態: ") @Html.DropDownList("orderState", items, "", new { @class = "form-control" })
                         </div>
                         <br />
                         <input type="submit" value="查詢" class="btn btn-info" />
@@ -49,6 +47,9 @@
                 <div>
                     <div>
                         @Html.Label("資訊室: ") @Html.DropDownList("maintainITDept", null, "", new { @class = "form-control" })
+                    </div>
+                    <div>
+                        @Html.Label("狀態: ") @Html.DropDownList("orderState", items, "", new { @class = "form-control" })
                     </div>
                     @*@Html.Label("Order By: ")
                     <div>
@@ -114,8 +115,7 @@
                 @Html.DisplayFor(modelItem => item.AcceptionTestFinishDate)
             </td>
             <td>
-                @Html.ActionLink("Details", "Details", new { 需求單號 = item.OrderID }) |
-                @Html.ActionLink("Edit", "Edit", new { 需求單號 = item.OrderID })
+                @Html.ActionLink("Details", "Detail", new { orderId = item.OrderID }) 
             </td>
         </tr>
     }
