@@ -28,7 +28,7 @@
                         
                         @Html.Label("驗收起始日大於: ")
                         <div>
-                            @Html.TextBox("acceptionTestStartDate_0", "2012-12-31", new { @class = "form-control", type = "date" })
+                            @Html.TextBox("acceptionTestStartDate_0", "2010-01-01", new { @class = "form-control", type = "date" })
                         </div>
 
                         @Html.Label("驗收起始日小於: ")
@@ -54,21 +54,8 @@
                     <div>
                         @Html.Label("部室選擇: ") @Html.DropDownList("applyDept", null, "", new { @class = "form-control" })
                     </div>
-                    @*@Html.Label("Order By: ")
-                    <div>
-                        @Html.RadioButton("orderby", "OrderID") @Html.Label("需求單排序")
-                        @Html.RadioButton("orderby", "Date") @Html.Label("驗收起始日排序")
-                        @Html.RadioButton("orderby", "Application_Room") @Html.Label("部室排序")
-                    </div>*@
                 </div>
             </div>
-            @*<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                <div >
-                    <div>
-                        @Html.ActionLink("匯出查詢結果至Excel檔案", "OutExcel", new { type = Request.Params["type"],  Date0=  Request.Params["Date0"] ,date = Request.Params["Date"], Room = Request.Params["Room"] }, new { @class = "btn btn-info", })
-                    </div>
-                </div>
-            </div>*@
         }
     </div>
 </p>

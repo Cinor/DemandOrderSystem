@@ -81,51 +81,58 @@ namespace DemandOrderSystem.Controllers
         /// <param name="orderID">需求單號</param>
         /// <param name="orderby">排序(未實作)</param>
         /// <returns></returns>
+        //[HttpGet]
+        //public ActionResult TableThree(int? page, string orderState, string acceptionTestStartDate_0, string acceptionTestStartDate_1, string applyDept, string orderID, string orderby)
+        //{
+        //    orderState = "驗收";
+
+        //    List<TableThreeViewModel> _Table = new List<TableThreeViewModel>();
+        //    List<String> item = new List<String>();
+
+        //    if (string.IsNullOrWhiteSpace(acceptionTestStartDate_1))
+        //    {
+        //        acceptionTestStartDate_1 = DateTime.Now.Date.ToString();
+        //    }
+
+        //    if (!string.IsNullOrEmpty(orderID))
+        //    {
+        //        _Table = dbLibrary.GetTableThreeViewModel(null, null, null, null).Where(o => o.OrderID.Contains(orderID)).ToList();
+        //        TempData["TempDataTest"] = _Table.Count.ToString();
+        //        ViewBag.applyDept = item.Select(x => new SelectListItem() { Text = x.ToString(), Value = x.ToString() });
+        //        return View(_Table.ToPagedList(page ?? 1, 20));
+        //    }
+
+        //    _Table = dbLibrary.GetTableThreeViewModel(orderState, acceptionTestStartDate_0, acceptionTestStartDate_1, "");
+        //    TempData["TempDataTest"] = _Table.Count.ToString();
+
+        //    var item2 = _Table.GroupBy(x => x.ApplyDept).Distinct().ToList();
+        //    ViewBag.applyDept = item2.Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() });
+
+        //    if (!string.IsNullOrWhiteSpace(applyDept))
+        //    {
+        //        _Table = _Table.Where(o => o.ApplyDept == applyDept).ToList();
+        //        TempData["TempDataTest"] = _Table.Count.ToString();
+        //    }
+
+        //    return View(_Table.ToPagedList(page ?? 1, 20));
+        //}
+
+
         [HttpGet]
-        public ActionResult TableThree(int? page, string orderState, string acceptionTestStartDate_0, string acceptionTestStartDate_1, string applyDept, string orderID, string orderby)
+        public ActionResult TableThree(int? page, string orderState = null, string acceptionTestStartDate_0 = null, string acceptionTestStartDate_1 = null, string applyDept = null, string orderID = null)
         {
             orderState = "驗收";
 
             List<TableThreeViewModel> _Table = new List<TableThreeViewModel>();
-            List<String> item = new List<String>();
 
-            if (string.IsNullOrWhiteSpace(acceptionTestStartDate_1))
-            {
-                acceptionTestStartDate_1 = DateTime.Now.Date.ToString();
-            }
-
-            if (!string.IsNullOrEmpty(orderID))
-            {
-                _Table = dbLibrary.GetTableThreeViewModel(null, null, null, null).Where(o => o.OrderID.Contains(orderID)).ToList();
-                TempData["TempDataTest"] = _Table.Count.ToString();
-                ViewBag.applyDept = item.Select(x => new SelectListItem() { Text = x.ToString(), Value = x.ToString() });
-                return View(_Table.ToPagedList(page ?? 1, 20));
-            }
-
-            _Table = dbLibrary.GetTableThreeViewModel(orderState, acceptionTestStartDate_0, acceptionTestStartDate_1, "");
+            _Table = dbLibrary.GetTableThreeViewModel(orderState, acceptionTestStartDate_0, acceptionTestStartDate_1, applyDept, orderID);
+            var item = _Table.GroupBy(x => x.ApplyDept).Distinct().ToList();
+            ViewBag.applyDept = item.Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() });
             TempData["TempDataTest"] = _Table.Count.ToString();
-
-            var item2 = _Table.GroupBy(x => x.ApplyDept).Distinct().ToList();
-            ViewBag.applyDept = item2.Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() });
-
-            switch (orderby)
-            {
-                case "OrderID":
-                    return View(_Table.OrderBy(o => o.OrderID).ToPagedList(page ?? 1, 20));
-                case "Date":
-                    return View(_Table.OrderBy(o => o.AcceptionTestStartDate).ToPagedList(page ?? 1, 20));
-                case "Application_Room":
-                    return View(_Table.OrderBy(o => o.ApplyDept).ToPagedList(page ?? 1, 20));
-            }
-
-            if (!string.IsNullOrWhiteSpace(applyDept))
-            {
-                _Table = _Table.Where(o => o.ApplyDept == applyDept).ToList();
-                TempData["TempDataTest"] = _Table.Count.ToString();
-            }
 
             return View(_Table.ToPagedList(page ?? 1, 20));
         }
+
 
 
         /// <summary>

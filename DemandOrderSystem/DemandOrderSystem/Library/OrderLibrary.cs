@@ -149,25 +149,42 @@ namespace DemandOrderSystem.Library
         /// <param name="acceptionTestStartDate_1">驗收開始日_範圍結</param>
         /// <param name="applyDept">申請人部室</param>
         /// <returns></returns>
-        public List<TableThreeViewModel> GetTableThreeViewModel(string orderState, string acceptionTestStartDate_0, string acceptionTestStartDate_1, string applyDept)
+        public List<TableThreeViewModel> GetTableThreeViewModel(string orderState, string acceptionTestStartDate_0, string acceptionTestStartDate_1, string applyDept, string orderID)
         {
 
-            var Table = (from odt in getOrderDatas()
-                         where (!string.IsNullOrWhiteSpace(orderState) ? odt.State == orderState : true)
-                         & (!string.IsNullOrWhiteSpace(acceptionTestStartDate_0) ? odt.AcceptionTestStartDate >= Convert.ToDateTime(acceptionTestStartDate_0) : true)
-                         && (!string.IsNullOrWhiteSpace(acceptionTestStartDate_1) ? odt.AcceptionTestStartDate <= Convert.ToDateTime(acceptionTestStartDate_1) : true)
-                         & (!string.IsNullOrWhiteSpace(applyDept) ? odt.ApplyDept == applyDept : true)
-                         select new TableThreeViewModel
-                         {
-                             OrderID = odt.OrderID,
-                             OrderName = odt.OrderName,
-                             Applicant = odt.Applicant,
-                             ApplyDept = odt.ApplyDept,
-                             DemandDutyPerson = odt.DemandDutyPerson,
-                             AcceptionTestStartDate = odt.AcceptionTestStartDate
-                         }).ToList();
+            try
+            {
+                if (string.IsNullOrWhiteSpace(acceptionTestStartDate_1))
+                {
+                    acceptionTestStartDate_1 = DateTime.Now.Date.ToString();
+                }
 
-            return Table;
+
+                var Table = (from odt in getOrderDatas()
+                             where (!string.IsNullOrWhiteSpace(orderState) ? odt.State == orderState : true)
+                             & (!string.IsNullOrWhiteSpace(applyDept) ? odt.ApplyDept == applyDept : true)
+                             & (!string.IsNullOrWhiteSpace(orderID) ? odt.OrderID == orderID : true)
+                             & (!string.IsNullOrWhiteSpace(acceptionTestStartDate_0) ? odt.AcceptionTestStartDate >= Convert.ToDateTime(acceptionTestStartDate_0) : true)
+                             & (!string.IsNullOrWhiteSpace(acceptionTestStartDate_1) ? odt.AcceptionTestStartDate <= Convert.ToDateTime(acceptionTestStartDate_1) : true)
+                             select new TableThreeViewModel
+                             {
+                                 OrderID = odt.OrderID,
+                                 OrderName = odt.OrderName,
+                                 Applicant = odt.Applicant,
+                                 ApplyDept = odt.ApplyDept,
+                                 DemandDutyPerson = odt.DemandDutyPerson,
+                                 AcceptionTestStartDate = odt.AcceptionTestStartDate
+                             }).ToList();
+
+                return Table;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            
         }
 
         /// <summary>
