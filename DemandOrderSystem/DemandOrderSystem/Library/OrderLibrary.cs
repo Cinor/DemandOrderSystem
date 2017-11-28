@@ -10,6 +10,7 @@ using PagedList;
 using System.IO;
 using NPOI.XSSF.UserModel;
 using System.Data;
+using System.Collections;
 
 namespace DemandOrderSystem.Library
 {
@@ -510,6 +511,54 @@ namespace DemandOrderSystem.Library
             //return null;
         }
 
+        public IEnumerable<Order> GetDatasByMonthAndStateAndDeptIEnum(DateTime searchdate, string state, int deptcode)
+        {
+            IEnumerable<Order> dataList = getOrderDatas();
+
+            string dept = deptName[deptcode];
+
+            switch (state)
+            {
+                case "受理":
+                    dataList = dataList.Where(model => (model.ExpectRecieveDate.Value.Year == searchdate.Year && model.ExpectRecieveDate.Value.Month == searchdate.Month))
+                                            .OrderBy(model => model.ExpectStartDate);
+                    break;
+                case "結案":
+                    dataList = dataList.Where(model => (model.ExpectRecieveDate.Value.Year == searchdate.Year && model.ExpectRecieveDate.Value.Month == searchdate.Month))
+                                            .Where(model => model.State == "結案")
+                                            .OrderBy(model => model.ExpectStartDate);
+
+                    break;
+                case "未完成":
+                    dataList = dataList.Where(model => (model.ExpectRecieveDate.Value.Year == searchdate.Year && model.ExpectRecieveDate.Value.Month == searchdate.Month))
+                                            .Where(model => model.State != "結案")
+                                            .OrderBy(model => model.ExpectStartDate);
+
+                    break;
+                //從以前到現在的資料
+                case "累計未完成":
+                    dataList = dataList.Where(model => model.ExpectRecieveDate.Value.Date < searchdate.Date || (model.ExpectRecieveDate.Value.Year == searchdate.Year && model.ExpectRecieveDate.Value.Month == searchdate.Month))
+                                              .Where(model => model.State != "結案")
+                                              .OrderBy(model => model.ExpectStartDate);
+
+                    break;
+                default:
+                    dataList = dataList.Where(model => (model.ExpectRecieveDate.Value.Year == searchdate.Year && model.ExpectRecieveDate.Value.Month == searchdate.Month))
+                                              .OrderBy(model => model.ExpectStartDate);
+                    break;
+            }
+
+            //沒有資訊中心這個分類
+            if (dept != "資訊中心")
+            {
+                dataList = dataList.Where(model => model.ITDept == dept);
+            }
+
+
+            return dataList;
+            //return null;
+        }
+
         /// <summary>
         /// 月份+狀態+申請部室 取得需求單
         /// </summary>
@@ -567,6 +616,56 @@ namespace DemandOrderSystem.Library
 
 
             return dataList;
+        }
+
+
+        public IEnumerable<Order> GetDatasByMonthAndStateAndApplydeptEnum(DateTime searchdate, string state, string applyDept)
+        {
+            var dataList = getOrderDatas();
+
+            IEnumerable<Order> orders;
+
+            string dept = applyDept;
+
+            switch (state)
+            {
+                case "受理":
+                    orders = dataList.Where(model => (model.ExpectRecieveDate.Value.Year == searchdate.Year && model.ExpectRecieveDate.Value.Month == searchdate.Month))
+                                            .OrderBy(model => model.ExpectStartDate);
+                    break;
+                case "結案":
+                    orders = dataList.Where(model => (model.ExpectRecieveDate.Value.Year == searchdate.Year && model.ExpectRecieveDate.Value.Month == searchdate.Month))
+                                            .Where(model => model.State == "結案")
+                                            .OrderBy(model => model.ExpectStartDate);
+
+                    break;
+                case "未完成":
+                    orders = dataList.Where(model => (model.ExpectRecieveDate.Value.Year == searchdate.Year && model.ExpectRecieveDate.Value.Month == searchdate.Month))
+                                            .Where(model => model.State != "結案")
+                                            .OrderBy(model => model.ExpectStartDate);
+
+                    break;
+                //從以前到現在的資料
+                case "累計未完成":
+                    orders = dataList.Where(model => model.ExpectRecieveDate.Value.Date < searchdate.Date || (model.ExpectRecieveDate.Value.Year == searchdate.Year && model.ExpectRecieveDate.Value.Month == searchdate.Month))
+                                              .Where(model => model.State != "結案")
+                                              .OrderBy(model => model.ExpectStartDate);
+
+                    break;
+                default:
+                    orders = dataList.Where(model => (model.ExpectRecieveDate.Value.Year == searchdate.Year && model.ExpectRecieveDate.Value.Month == searchdate.Month))
+                                              .OrderBy(model => model.ExpectStartDate);
+                    break;
+            }
+
+            //沒有資訊中心這個分類
+            if (dept != "所有部門")
+            {
+                orders = orders.Where(model => model.ApplyDept == dept);
+            }
+
+
+            return orders;
         }
 
         /// <summary>
