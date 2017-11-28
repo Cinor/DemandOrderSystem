@@ -175,6 +175,7 @@ namespace DemandOrderSystem.Library
                                  DemandDutyPerson = odt.DemandDutyPerson,
                                  AcceptionTestStartDate = odt.AcceptionTestStartDate
                              }).ToList();
+                
 
                 return Table;
             }
@@ -323,10 +324,12 @@ namespace DemandOrderSystem.Library
         /// <summary>
         /// 各業務線別逾預估完成日未結案件數統計及明細表
         /// </summary>
-        /// <param name="expectFinishDate"></param>
+        /// <param name="expectFinishDate">預估完成日小於</param>
         /// <returns></returns>
         public TableSixViewModel GetTableSixViewModel(DateTime expectFinishDate)
         {
+
+
             TableSixViewModel viewclass = new TableSixViewModel();
             viewclass.ITDept = new List<Class6Department>();
 
@@ -381,65 +384,68 @@ namespace DemandOrderSystem.Library
         /// <summary>
         /// 撤件明細
         /// </summary>
+        /// <param name="orderID">需求單號</param>
         /// <param name="caseCloseDate">結案日</param>
         /// <param name="dischargeDate">撤件日期</param>
         /// <param name="applyDept">申請部室</param>
         /// <returns></returns>
-        public List<TableSevenViewModel> GetTableSevenViewModel(string caseCloseDate, string dischargeDate, string applyDept)
+        public List<TableSevenViewModel> GetTableSevenViewModel(string orderID, string applyDept, string caseCloseDate, string dischargeDate)
         {
-            List<TableSevenViewModel> _Table = new List<TableSevenViewModel>();
-            DataTable orderDt = new DataTable();
+            List<TableSevenViewModel> _tableList = new List<TableSevenViewModel>();
 
-            orderDt = dBService.getSevenTable(caseCloseDate, dischargeDate);
+            var resule = (from dt in dBService.getSevenTable(caseCloseDate, dischargeDate).AsEnumerable()
+                          where (!string.IsNullOrWhiteSpace(orderID) ? dt.OrderID == orderID : true)
+                          & (!string.IsNullOrWhiteSpace(applyDept) ? dt.ApplyDept == applyDept : true)
+                          select dt).ToList();
 
-            _Table = (from dt in orderDt.AsEnumerable()
-                     select new TableSevenViewModel
-                     {
-                         OrderID = dt.Field<string>("需求單號"),
-                         ApplyDept = dt.Field<string>("申請部室"),
-                         ApplySec = dt.Field<string>("申請課別"),
-                         Applicant = dt.Field<string>("申請人"),
-                         OrderName = dt.Field<string>("需求單主旨"),
-                         DischargeDate = dt.Field<DateTime?>("撤件日期")
-                     }).ToList();
-
-            if (!string.IsNullOrWhiteSpace(applyDept))
-            {
-                _Table = _Table.Where(o => o.ApplyDept == applyDept).ToList();
-            }
-
-            return _Table;
+            return resule;
         }
 
         /// <summary>
         /// 已完成驗收但尚未結案
         /// </summary>
+        /// <param name="orderID">需求單號</param>
         /// <param name="orderState">需求單狀態</param>
+        /// <param name="maintainITDept">維護資訊室</param>
         /// <param name="acceptionTestFinishDate_0">驗收結束日_範圍起</param>
         /// <param name="acceptionTestFinishDate_1">驗收結束日_範圍結</param>
-        /// <param name="maintainITDept">維護資訊室</param>
         /// <returns></returns>
-        public List<TableEightViewModel> GetTableEightViewModel(string orderState, string acceptionTestFinishDate_0, string acceptionTestFinishDate_1,  string maintainITDept)
+        public List<TableEightViewModel> GetTableEightViewModel(string orderID, string orderState, string maintainITDept,  string acceptionTestFinishDate_0, string acceptionTestFinishDate_1)
         {
 
-            var Table = (from odt in getOrderDatas()
-                         where (!string.IsNullOrWhiteSpace(orderState) ? odt.State == orderState : true)
-                         & (!string.IsNullOrWhiteSpace(acceptionTestFinishDate_0) ? odt.AcceptionTestFinishDate >= Convert.ToDateTime(acceptionTestFinishDate_0) : true)
-                         && (!string.IsNullOrWhiteSpace(acceptionTestFinishDate_1) ? odt.AcceptionTestFinishDate <= Convert.ToDateTime(acceptionTestFinishDate_1) : true)
-                         & (!string.IsNullOrWhiteSpace(maintainITDept) ? odt.MaintainITDept == maintainITDept : true)
-                         select new TableEightViewModel
-                         {
-                             MaintainITDept = odt.MaintainITDept,
-                             MaintainITSec = odt.MaintainITSec,
-                             DemandDutyPerson = odt.DemandDutyPerson,
-                             OrderID = odt.OrderID,
-                             OrderName = odt.OrderName,
-                             State = odt.State,
-                             AcceptionTestFinishDate = odt.AcceptionTestFinishDate
-                         }).ToList();
+            try
+            {
+                if (string.IsNullOrWhiteSpace(acceptionTestFinishDate_1))
+                {
+                    acceptionTestFinishDate_1 = DateTime.Now.Date.ToString();
+                }
 
 
-            return Table;
+                var Table = (from odt in getOrderDatas()
+                             where (!string.IsNullOrWhiteSpace(orderState) ? odt.State == orderState : true)
+                             & (!string.IsNullOrWhiteSpace(orderID) ? odt.OrderID == orderID : true)
+                             & (!string.IsNullOrWhiteSpace(maintainITDept) ? odt.MaintainITDept == maintainITDept : true)
+                             & (!string.IsNullOrWhiteSpace(acceptionTestFinishDate_0) ? odt.AcceptionTestFinishDate >= Convert.ToDateTime(acceptionTestFinishDate_0) : true)
+                             & (!string.IsNullOrWhiteSpace(acceptionTestFinishDate_1) ? odt.AcceptionTestFinishDate <= Convert.ToDateTime(acceptionTestFinishDate_1) : true)
+                             select new TableEightViewModel
+                             {
+                                 MaintainITDept = odt.MaintainITDept,
+                                 MaintainITSec = odt.MaintainITSec,
+                                 DemandDutyPerson = odt.DemandDutyPerson,
+                                 OrderID = odt.OrderID,
+                                 OrderName = odt.OrderName,
+                                 State = odt.State,
+                                 AcceptionTestFinishDate = odt.AcceptionTestFinishDate
+                             }).ToList();
+
+
+                return Table;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         /// <summary>

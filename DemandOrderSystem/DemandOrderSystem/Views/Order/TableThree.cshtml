@@ -8,38 +8,19 @@
 
 <h2>已交付UAT但尚未結案之明細表</h2>
 
-@{
-    List<SelectListItem> items = new List<SelectListItem>{
-                new SelectListItem {Text = "收件完成", Value = "收件完成"},
-                new SelectListItem {Text = "受理", Value = "受理"} ,
-                new SelectListItem {Text = "結案", Value = "結案"},
-                new SelectListItem {Text = "驗收", Value = "驗收", Selected = true}
-    };
-
-}
 
 <p>
     <div class="row">
         @using (Html.BeginForm("TableThree", "Order", FormMethod.Get))
         {
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                <div >
+                <div>
                     <div class="form-group">
-                        
-                        @Html.Label("驗收起始日大於: ")
                         <div>
-                            @Html.TextBox("acceptionTestStartDate_0", "2010-01-01", new { @class = "form-control", type = "date" })
+                            @Html.Label("驗收起始日大於: ") @Html.TextBox("acceptionTestStartDate_0", "", new { @class = "form-control", type = "date" })
                         </div>
-
-                        @Html.Label("驗收起始日小於: ")
                         <div>
-                            @Html.TextBox("acceptionTestStartDate_1", "2017-12-31", new { @class = "form-control", type = "date" })
-                        </div>
-                        @Html.Label("需求單號查詢: ")
-                        <div>
-                            @Html.TextBox("orderID", "", new { @class = "form-control" })
-                            <br />
-                            @*@Html.Label("狀態: ") @Html.DropDownList("orderState", items, "", new { @class = "form-control" })*@
+                            @Html.Label("驗收起始日小於: ") @Html.TextBox("acceptionTestStartDate_1", "", new { @class = "form-control", type = "date" })
                         </div>
                         <br />
                         <input type="submit" value="查詢" class="btn btn-info" />
@@ -50,11 +31,15 @@
                 </div>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                <div >
-                    <div>
-                        @Html.Label("部室選擇: ") @Html.DropDownList("applyDept", null, "", new { @class = "form-control" })
-                    </div>
+                <div>
+                    @Html.Label("部室選擇: ") @Html.DropDownList("applyDept", null, "", new { @class = "form-control" })
                 </div>
+                <div>
+                    @Html.Label("需求單號查詢: ") @Html.TextBox("orderID", "", new { @class = "form-control" })
+                </div>
+                @*<div>
+                    @Html.Label("需求單狀態: ") @Html.DropDownList("orderState", items, "", new { @class = "form-control" })
+                 </div>*@
             </div>
         }
     </div>
@@ -121,10 +106,9 @@
 
 <form method="get">
     @Html.PagedListPager((IPagedList)Model, page => Url.Action("TableThree", new { page })
-+ "&orderState=" + Request.Params["orderState"]
+//+ "&orderState=" + Request.Params["orderState"]
 + "&acceptionTestStartDate_0=" + Request.Params["acceptionTestStartDate_0"]
 + "&acceptionTestStartDate_1=" + Request.Params["acceptionTestStartDate_1"]
 + "&applyDept=" + Request.Params["applyDept"]
-+ "&orderID=" + Request.Params["orderID"]
-+ "&orderby=" + Request.Params["orderby"])
++ "&orderID=" + Request.Params["orderID"])
 </form>

@@ -29,11 +29,6 @@
                         <div>
                             @Html.TextBox("dischargeDate", "2014-11-30", new { @class = "form-control", type = "date" })
                         </div>
-
-                        @Html.Label("需求單號查詢: ")
-                        <div>
-                            @Html.TextBox("orderID", "", new { @class = "form-control" })
-                        </div>
                         <br />
                         <input type="submit" value="查詢" class="btn btn-info" />
                     </div>
@@ -48,20 +43,12 @@
                     <div>
                         @Html.Label("部室選擇: ") @Html.DropDownList("applyDept", null, "", new { @class = "form-control" })
                     </div>
-                    @*@Html.Label("Order By: ")
                     <div>
-                        @Html.RadioButton("orderby", "OrderID") @Html.Label("OrderID")
-                        @Html.RadioButton("orderby", "Application_department") @Html.Label("Application_department")
-                    </div>*@
-                </div>
-            </div>
-            @*<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                <div>
-                    <div>
-                        @Html.ActionLink("匯出查詢結果至Excel檔案", "OutExcel", new { Date1 = Request.Params["Date1"], Date2 = Request.Params["Date2"], Room = Request.Params["Room"] }, new { @class = "btn btn-info", })
+                        @Html.Label("需求單號查詢: ") @Html.TextBox("orderID", "", new { @class = "form-control" })
                     </div>
                 </div>
-            </div>*@
+            </div>
+
         }
 
     </div>
