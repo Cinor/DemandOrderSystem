@@ -393,6 +393,8 @@ namespace DemandOrderSystem.Library
         {
             List<TableSevenViewModel> _tableList = new List<TableSevenViewModel>();
 
+            _tableList = dBService.getSevenTable_0(Convert.ToDateTime(caseCloseDate), Convert.ToDateTime(dischargeDate)).ToList();
+
             var resule = (from dt in dBService.getSevenTable(caseCloseDate, dischargeDate).AsEnumerable()
                           where (!string.IsNullOrWhiteSpace(orderID) ? dt.OrderID == orderID : true)
                           & (!string.IsNullOrWhiteSpace(applyDept) ? dt.ApplyDept == applyDept : true)

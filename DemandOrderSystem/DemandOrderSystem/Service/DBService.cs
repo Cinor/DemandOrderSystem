@@ -251,5 +251,35 @@ namespace DemandOrderSystem.Service
             return _resultList;
         }
 
+
+        public IQueryable<TableSevenViewModel> getSevenTable_0(DateTime caseCloseDate, DateTime dischargeDate)
+        {
+            using (RequireSystemEntities _db = new RequireSystemEntities())
+            {
+
+                string[] get_in = { "12D000", "13D000", "106000", "11L000" };
+
+                string[] not_in = { "蔡嘉媛", "陳芳珠" };
+
+                IQueryable<TableSevenViewModel> viewREQ = from REQ in _db.Request
+                                                          join Pj in _db.Project on REQ.MAProjectID equals Pj.PrjID into REQ2
+                                                          from Pj in REQ2.DefaultIfEmpty()
+                                                          join App in _db.ApplicantInfo on REQ.ReqID equals App.ReqID into REQ3
+                                                          from App in REQ3.DefaultIfEmpty()
+                                                          where string.Compare(REQ.ReqID, "RE200900000") > 0 && (REQ.ReqStatus == "10" && (REQ.ReqCloseDate > caseCloseDate || REQ.ReqCancelDate > dischargeDate))
+                                                          && REQ.FormType == "1" && get_in.Contains(REQ.ITDept) && !not_in.Contains(App.EmpChiName)
+                                                          select new TableSevenViewModel()
+                                                          {
+                                                              ApplyDept = App.DeptChiName,
+                                                              ApplySec = App.UnitChiName,
+                                                              Applicant = App.EmpChiName,
+                                                              OrderID = REQ.ReqID,
+                                                              OrderName = REQ.ReqSubject,
+                                                              DischargeDate = REQ.ReqCancelDate
+                                                          };
+
+                return viewREQ;
+            }
+        }
     }
 }
