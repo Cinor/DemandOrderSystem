@@ -15,7 +15,10 @@
 
         if (@Model.Orders.Where(model => model.ExpectRecieveDate.GetValueOrDefault().Date > Model.SearchDate.Date || (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.Month)).Count() != 0) {
 
-            google.charts.setOnLoadCallback(drawPieChart);
+            if (@Model.SelectedDeptName == "所有部門") {
+                google.charts.setOnLoadCallback(drawPieChart);
+            }
+            //google.charts.setOnLoadCallback(drawPieChart);
 
             google.charts.setOnLoadCallback(drawFinishPercentBarChart);
 
@@ -78,7 +81,8 @@
             data.addColumn('number', '完成百分比');
 
             @{
-                applyDept = Model.Orders.Where(model => model.ExpectRecieveDate.GetValueOrDefault().Date > Model.SearchDate.Date || (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.Month)).GroupBy(model => model.ApplyDept).OrderBy(g => g.Count());
+                applyDept = Model.Orders.Where(model => model.ExpectRecieveDate.GetValueOrDefault().Date > Model.SearchDate.Date || (model.ExpectRecieveDate.GetValueOrDefault().Year == Model.SearchDate.Year && model.ExpectRecieveDate.GetValueOrDefault().Month == Model.SearchDate.Month))
+                                        .GroupBy(model => model.ApplyDept).OrderByDescending(g => g.Count());
 
                 applyDept = applyDept.OrderByDescending(g => g.Count());
 

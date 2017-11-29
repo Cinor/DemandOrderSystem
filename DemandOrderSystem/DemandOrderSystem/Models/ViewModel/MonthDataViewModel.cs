@@ -22,6 +22,24 @@ namespace DemandOrderSystem.Models.ViewModel
 
         public int Page { get; set; } = 1;
 
+        /// <summary>
+        /// 回傳部室 若資訊部室有值就用資訊部室
+        /// </summary>
+        public string Dept
+        {
+            get
+            {
+                if (DeptName == null)
+                {
+                    return ApplyDeptName;
+                }
+                else
+                {
+                    return DeptName;
+                }
+            }
+        }
+
         //public List<Order> Orders { get; set; }
 
         public IPagedList<Order> Orders { get; set; }

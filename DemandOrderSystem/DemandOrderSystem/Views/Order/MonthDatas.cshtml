@@ -134,7 +134,7 @@
         @Html.HiddenFor(m => m.DataMonth)
         @Html.HiddenFor(m => m.DeptName)
         @Html.TextBoxFor(m => m.StrSearch)
-        <input type="submit" value="確認" />
+        <input type="submit" value="確認" class="btn btn-info"/>
     </p>
 }
 <table class="table">
@@ -206,6 +206,7 @@
     State = Model.State,
     DataMonth = Model.DataMonth,
     DeptCode = Model.DeptCode,
+    DeptName = Model.DeptName,
     ApplyDeptName = Model.ApplyDeptName,
     StrSearch = Model.StrSearch
 }))

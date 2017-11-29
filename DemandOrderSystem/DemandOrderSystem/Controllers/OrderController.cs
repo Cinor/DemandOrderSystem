@@ -46,7 +46,7 @@ namespace DemandOrderSystem.Controllers
         [HttpPost]
         public ActionResult TableOne(TableOneViewModel viewModel)
         {
-            viewModel.Orders2 = dbLibrary.GetDataByDept(viewModel.selectedDept, viewModel.SearchDate);
+            viewModel.Orders2 = dbLibrary.GetDataByDept(viewModel.selectedDeptName, viewModel.SearchDate);
 
             return View(viewModel);
         }
@@ -297,7 +297,7 @@ namespace DemandOrderSystem.Controllers
 
             newViewModel.SelectedDept = viewModel.SelectedDept;
 
-            newViewModel.Orders = dbLibrary.ReturnDataByApplydept(viewModel.Orders, viewModel._applyDeptName[viewModel.SelectedDept]);
+            newViewModel.Orders = dbLibrary.ReturnDataByApplydept(viewModel.Orders, viewModel.SelectedDeptName);
 
             return View(newViewModel);
 
@@ -369,7 +369,7 @@ namespace DemandOrderSystem.Controllers
                     //                            .Where(o => o.OrderName.Contains(viewModel.StrSearch))
                     //                            .ToList();
 
-                    orders = dbLibrary.GetDatasByMonthAndStateAndDeptIEnum(viewModel.DataMonth, viewModel.State, viewModel.DeptCode)
+                    orders = dbLibrary.GetDatasByMonthAndStateAndDeptIEnum(viewModel.DataMonth, viewModel.State, viewModel.Dept)
                                       .Where(o => o.OrderName.Contains(viewModel.StrSearch));
 
                     viewModel.DeptName = dbLibrary.deptName[viewModel.DeptCode];
@@ -393,7 +393,7 @@ namespace DemandOrderSystem.Controllers
                     //從TableOne連結過來
                     //viewModel.Orders = dbLibrary.GetDatasByMonthAndStateAndDept(viewModel.DataMonth, viewModel.State, viewModel.DeptCode);
 
-                    orders = dbLibrary.GetDatasByMonthAndStateAndDeptIEnum(viewModel.DataMonth, viewModel.State, viewModel.DeptCode);
+                    orders = dbLibrary.GetDatasByMonthAndStateAndDeptIEnum(viewModel.DataMonth, viewModel.State, viewModel.Dept);
 
                     viewModel.DeptName = dbLibrary.deptName[viewModel.DeptCode];
                 }

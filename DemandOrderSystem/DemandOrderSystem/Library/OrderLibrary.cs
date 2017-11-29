@@ -439,9 +439,9 @@ namespace DemandOrderSystem.Library
         /// <param name="deptCode">部室編號string[] { "資訊中心", "數位資訊部", "資訊系統部", "投資資訊部", "壽險資訊部", "資訊規劃部" };</param>
         /// <param name="searchdate">起始日期</param>
         /// <returns></returns>
-        public List<Order> GetDataByDept(int deptCode, DateTime searchdate)
+        public List<Order> GetDataByDept(string deptName, DateTime searchdate)
         {
-            string dept = deptName[deptCode];
+            string dept = deptName;
 
             var orderList = getOrderDatas();
 
@@ -518,11 +518,18 @@ namespace DemandOrderSystem.Library
             //return null;
         }
 
-        public IEnumerable<Order> GetDatasByMonthAndStateAndDeptIEnum(DateTime searchdate, string state, int deptcode)
+        /// <summary>
+        /// 回傳該資訊部門以及狀態還有搜尋月份的需求單
+        /// </summary>
+        /// <param name="searchdate">搜尋月份</param>
+        /// <param name="state">狀態</param>
+        /// <param name="deptcode"></param>
+        /// <returns></returns>
+        public IEnumerable<Order> GetDatasByMonthAndStateAndDeptIEnum(DateTime searchdate, string state, string deptName)
         {
             IEnumerable<Order> dataList = getOrderDatas();
 
-            string dept = deptName[deptcode];
+            string dept = deptName;
 
             switch (state)
             {

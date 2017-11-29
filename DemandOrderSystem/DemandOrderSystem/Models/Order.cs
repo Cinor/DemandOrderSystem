@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -56,42 +57,49 @@ namespace DemandOrderSystem.Models
         /// 期望完成日
         /// </summary>
         [DisplayName("期望完成日")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime? ExpectCompleteDate { get; set; }
 
         /// <summary>
         /// 評估收件日
         /// </summary>
         [DisplayName("評估收件日")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime? ExpectRecieveDate { get; set; }
 
         /// <summary>
         /// 預計開始日
         /// </summary>
         [DisplayName("預計開始日")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime? ExpectStartDate { get; set; }
 
         /// <summary>
         /// 預計結束日
         /// </summary>
         [DisplayName("預計結束日")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime? ExpectFinishDate { get; set; }
 
         /// <summary>
         /// 驗收開始日
         /// </summary>
         [DisplayName("驗收開始日")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime? AcceptionTestStartDate { get; set; }
 
         /// <summary>
         /// 驗收結束日
         /// </summary>
         [DisplayName("驗收結束日")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime? AcceptionTestFinishDate { get; set; }
 
         /// <summary>
         /// 結案日
         /// </summary>
         [DisplayName("結案日")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime? CaseCloseDate { get; set; }
 
 

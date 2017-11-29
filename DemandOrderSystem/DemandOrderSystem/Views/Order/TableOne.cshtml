@@ -10,12 +10,11 @@
 
         google.charts.setOnLoadCallback(drawLogScales);
 
-        google.charts.setOnLoadCallback(DrawFinishPercentBarChart);
-
         selectDept = @Model.selectedDept;
 
         if (selectDept == 0) {
             google.charts.setOnLoadCallback(drawDeptOrderPieChart);
+            google.charts.setOnLoadCallback(DrawFinishPercentBarChart);
         }
 
         function drawLogScales() {
@@ -56,7 +55,7 @@
 
             var options = {
                 title: '需求單總攬',
-                width: 700,
+                width: 1000,
                 height: 400,
                 curveType: 'function',
                 hAxis: {
@@ -108,7 +107,7 @@
             var options = {
                 title: '各部門需求單完成比例',
                 height: 400,
-                width: 700,
+                width: 500,
                 hAxis: {
                     title: 'Percent',
                     minValue: 0,
@@ -156,7 +155,7 @@
             var options = {
                 title: '需求單各部門比例',
                 height: 400,
-                width: 700,
+                width: 500,
                 pieHole: 0.4
             };
 
@@ -279,7 +278,8 @@
                        {
                            DataMonth = Model.SearchDate.AddMonths(i),
                            State = "受理",
-                           DeptCode = Model.selectedDept
+                           DeptCode = Model.selectedDept,
+                           DeptName = Model.selectedDeptName
                        })
 
                     </td>
@@ -318,7 +318,8 @@
                        {
                            DataMonth = Model.SearchDate.AddMonths(i),
                            State = "結案",
-                           DeptCode = Model.selectedDept
+                           DeptCode = Model.selectedDept,
+                           DeptName = Model.selectedDeptName
                        })
 
                     </td>
@@ -357,7 +358,8 @@
                        {
                            DataMonth = Model.SearchDate.AddMonths(i),
                            State = "未完成",
-                           DeptCode = Model.selectedDept
+                           DeptCode = Model.selectedDept,
+                           DeptName = Model.selectedDeptName
                        })
 
                     </td>
@@ -396,7 +398,8 @@
                        {
                            DataMonth = Model.SearchDate.AddMonths(i),
                            State = "累計未完成",
-                           DeptCode = Model.selectedDept
+                           DeptCode = Model.selectedDept,
+                           DeptName = Model.selectedDeptName
                        })
 
                     </td>
@@ -493,15 +496,19 @@
 @* 繪圖 *@
 <div class="row">
     <div class="container">
-        <div id="chart_div" class="col-md-7 col-sm-12"></div>
+        <div id="chart_div" class="col-md-12 col-sm-12"></div>
     </div>
 
     <br />
 
-    <div id="dept_order_percent_pie_chart_div" class="col-md-7 col-sm-12"></div>
+    <div class="row">
 
-    <br />
+        <div id="dept_order_percent_pie_chart_div" class="col-md-6 col-sm-12"></div>
 
-    <div id="percentChart_div" class="col-md-7 col-sm-12"></div>
+        <br />
+
+        <div id="percentChart_div" class="col-md-6 col-sm-12"></div>
+
+    </div>
 </div>
 
