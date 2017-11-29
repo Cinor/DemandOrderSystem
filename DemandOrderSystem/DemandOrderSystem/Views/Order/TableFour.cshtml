@@ -40,8 +40,8 @@
             // Set chart options
             var options = {
                 'title': '電腦需求單分類佔據圖',
-                'width': 1000,
-                'height': 400
+                'width': 1500,
+                'height': 600
             };
 
             // Instantiate and draw our chart, passing in some options.
@@ -90,7 +90,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="分析" class="btn btn-default" />
+                <input type="submit" value="分析" class="btn btn-info" />
             </div>
         </div>
     </div>
@@ -100,44 +100,46 @@
 @{ DateTime? tableDateTime = Model.startTime;
     if (Model.countByMonth.Count != 0)
     {
-        <table class="table">
-            <tr>
-                <th>
-                    類別
-                </th>
-                @while (tableDateTime <= Model.endTime)
-                {
-                    <th>
-                        @Html.Label(tableDateTime.Value.ToString("yyyy-MMM"))
-                        @{tableDateTime = tableDateTime.Value.AddMonths(1);}
-                    </th>
-                            }
-                <th>
-                    總計
-                </th>
-            </tr>
-
-            @foreach (var item in Model.countByMonth)
-                {
+        <div class=" col-md-12" style="overflow: auto;padding:0px;">
+            <table class="table" style="white-space:nowrap">
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.classificationName)
-                    </td>
-
-                    @foreach (var item2 in item.counts)
-                    {
-                        <td>
-                            @Html.DisplayFor(modelItem => item2)
-                        </td>
-                    }
-                    <td>
-                        @Html.Label(item.sum.ToString())
-                    </td>
+                    <th>
+                        類別
+                    </th>
+                    @while (tableDateTime <= Model.endTime)
+                {
+                        <th>
+                            @Html.Label(tableDateTime.Value.ToString("yyyy-MMM"))
+                            @{tableDateTime = tableDateTime.Value.AddMonths(1);}
+                        </th>
+                                }
+                    <th>
+                        總計
+                    </th>
                 </tr>
-            }
+
+                @foreach (var item in Model.countByMonth)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.classificationName)
+                        </td>
+
+                        @foreach (var item2 in item.counts)
+                    {
+                            <td>
+                                @Html.DisplayFor(modelItem => item2)
+                            </td>
+                        }
+                        <td>
+                            @Html.Label(item.sum.ToString())
+                        </td>
+                    </tr>
+                }
 
 
-        </table>
+            </table>
+        </div>
         <div id="chart_div"></div>
                             }
 }
