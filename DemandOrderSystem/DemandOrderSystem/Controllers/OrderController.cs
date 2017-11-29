@@ -173,7 +173,7 @@ namespace DemandOrderSystem.Controllers
         {
 
             int currentPage = page < 1 ? 1 : page;
-            var _Table = dbLibrary.GetTableEightViewModel(orderID,orderState, maintainITDept_list, acceptionTestFinishDate_0, acceptionTestFinishDate_1, page);
+            var _Table = dbLibrary.GetTableEightViewModel(orderID, orderState, maintainITDept_list, acceptionTestFinishDate_0, acceptionTestFinishDate_1, page);
 
             return View(_Table);
         }

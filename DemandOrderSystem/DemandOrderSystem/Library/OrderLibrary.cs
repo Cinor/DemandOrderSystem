@@ -164,7 +164,8 @@ namespace DemandOrderSystem.Library
                     acceptionTestStartDate_1 = DateTime.Now.Date.ToString();
                 }
 
-                var Table = (from odt in getOrderDatas()
+                var orderDatasList = getOrderDatas();
+                var Table = (from odt in orderDatasList
                              where (!string.IsNullOrWhiteSpace(orderState) ? odt.State == orderState : true)
                              & (!string.IsNullOrWhiteSpace(applyDept) ? odt.ApplyDept == applyDept : true)
                              & (!string.IsNullOrWhiteSpace(orderID) ? odt.OrderID == orderID : true)
@@ -181,7 +182,7 @@ namespace DemandOrderSystem.Library
                              }).ToList();
 
                 tableThreeViewModel.TableThree = Table.ToPagedList(currentPage, 20);
-                tableThreeViewModel.applicant_department_list = Table.GroupBy(x => x.ApplyDept).Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() }).Distinct().ToList();
+                tableThreeViewModel.applicant_department_list = orderDatasList.GroupBy(x => x.ApplyDept).Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() }).Distinct().ToList();
                 tableThreeViewModel.Count = Table.Count().ToString();
 
                 return tableThreeViewModel;
@@ -400,14 +401,15 @@ namespace DemandOrderSystem.Library
         {
             TableSevenViewModel tableSevenViewModel = new TableSevenViewModel();
 
-            var resule = (from dt in dBService.getSevenTable(Convert.ToDateTime(!string.IsNullOrWhiteSpace(caseCloseDate) ? caseCloseDate : caseCloseDate = "2010-01-01")
-                          , Convert.ToDateTime(!string.IsNullOrWhiteSpace(dischargeDate) ? dischargeDate : dischargeDate = "2010-01-01")).AsEnumerable()
+            var orderDatasList = dBService.getSevenTable(Convert.ToDateTime(!string.IsNullOrWhiteSpace(caseCloseDate) ? caseCloseDate : caseCloseDate = "2010-01-01")
+                          , Convert.ToDateTime(!string.IsNullOrWhiteSpace(dischargeDate) ? dischargeDate : dischargeDate = "2010-01-01")).AsEnumerable();
+            var resule = (from dt in orderDatasList
                           where (!string.IsNullOrWhiteSpace(orderID) ? dt.OrderID == orderID : true)
                           & (!string.IsNullOrWhiteSpace(applyDept) ? dt.ApplyDept == applyDept : true)
                           select dt).ToList();
             
             tableSevenViewModel.TableSeven = resule.ToPagedList(currentPage, 20);
-            tableSevenViewModel.applicant_department_list = resule.GroupBy(x => x.ApplyDept).Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() }).Distinct().ToList();
+            tableSevenViewModel.applicant_department_list = orderDatasList.GroupBy(x => x.ApplyDept).Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() }).Distinct().ToList();
             tableSevenViewModel.Count = resule.Count().ToString();
 
 
@@ -435,9 +437,9 @@ namespace DemandOrderSystem.Library
                 {
                     acceptionTestFinishDate_1 = DateTime.Now.Date.ToString();
                 }
-
-
-                var Table = (from odt in getOrderDatas()
+                
+                var orderDatasList = getOrderDatas();
+                var Table = (from odt in orderDatasList
                              where (!string.IsNullOrWhiteSpace(orderState) ? odt.State == orderState : true)
                              & (!string.IsNullOrWhiteSpace(orderID) ? odt.OrderID == orderID : true)
                              & (!string.IsNullOrWhiteSpace(maintainITDept) ? odt.MaintainITDept == maintainITDept : true)
@@ -455,7 +457,7 @@ namespace DemandOrderSystem.Library
                              }).ToList();
 
                 tableEightViewModel.TableEight = Table.ToPagedList(currentPage, 20);
-                tableEightViewModel.maintainITDept_list = Table.Where(x => x.MaintainITDept != null).GroupBy(x => x.MaintainITDept).Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() }).Distinct().ToList();
+                tableEightViewModel.maintainITDept_list = orderDatasList.Where(x => x.MaintainITDept != null).GroupBy(x => x.MaintainITDept).Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() }).Distinct().ToList();
                 tableEightViewModel.Count = Table.Count().ToString();
 
                 return tableEightViewModel;
