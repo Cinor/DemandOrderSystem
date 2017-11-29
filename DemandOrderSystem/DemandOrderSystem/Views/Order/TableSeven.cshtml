@@ -1,6 +1,6 @@
 ﻿@using PagedList;
 @using PagedList.Mvc;
-@model IPagedList<DemandOrderSystem.Models.ViewModel.TableSevenViewModel>
+@model DemandOrderSystem.Models.ViewModel.TableSevenViewModel
 
 @{
     ViewBag.Title = "撤件明細";
@@ -21,10 +21,6 @@
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <div>
                     <div class="form-group">
-                        @*@Html.Label("結案日: ")
-                        <div>
-                            @Html.TextBox("caseCloseDate", "2013-11-30", new { @class = "form-control", type = "date" })
-                        </div>*@
                         @Html.Label("撤件日期大於: ")
                         <div>
                             @Html.TextBox("dischargeDate", "2014-11-30", new { @class = "form-control", type = "date" })
@@ -33,7 +29,7 @@
                         <input type="submit" value="查詢" class="btn btn-info" />
                     </div>
                     <div>
-                        @Html.Label("符合條件總數: ") @TempData["TempDataTest"]
+                        @Html.Label("符合條件總數: ") @Html.DisplayFor(Model => Model.Count)
                     </div>
                 </div>
             </div>
@@ -41,7 +37,7 @@
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <div>
                     <div>
-                        @Html.Label("部室選擇: ") @Html.DropDownList("applyDept", null, "", new { @class = "form-control" })
+                        @Html.Label("部室選擇: ") @Html.DropDownList("applicant_department_list", null, "", new { @class = "form-control" })
                     </div>
                     <div>
                         @Html.Label("需求單號查詢: ") @Html.TextBox("orderID", "", new { @class = "form-control" })
@@ -57,27 +53,27 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().ApplyDept)
+            @Html.DisplayNameFor(model => model.TableSeven.FirstOrDefault().ApplyDept)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().ApplySec)
+            @Html.DisplayNameFor(model => model.TableSeven.FirstOrDefault().ApplySec)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Applicant)
+            @Html.DisplayNameFor(model => model.TableSeven.FirstOrDefault().Applicant)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().OrderID)
+            @Html.DisplayNameFor(model => model.TableSeven.FirstOrDefault().OrderID)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().OrderName)
+            @Html.DisplayNameFor(model => model.TableSeven.FirstOrDefault().OrderName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().DischargeDate)
+            @Html.DisplayNameFor(model => model.TableSeven.FirstOrDefault().DischargeDate)
         </th>
         <th></th>
     </tr>
 
-    @foreach (var item in Model)
+    @foreach (var item in Model.TableSeven)
     {
         <tr>
             <td>
@@ -106,9 +102,9 @@
 
 </table>
 <form method="get">
-    @Html.PagedListPager((IPagedList)Model, page => Url.Action("TableSeven", new { page })
+    @Html.PagedListPager((IPagedList)Model.TableSeven, page => Url.Action("TableSeven", new { page })
 + "&caseCloseDate=" + Request.Params["caseCloseDate"]
 + "&dischargeDate=" + Request.Params["dischargeDate"]
-+ "&applyDept=" + Request.Params["applyDept"]
++ "&applicant_department_list=" + Request.Params["applicant_department_list"]
 + "&orderID=" + Request.Params["orderID"])
 </form>

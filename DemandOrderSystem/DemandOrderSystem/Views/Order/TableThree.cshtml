@@ -1,6 +1,6 @@
-﻿@using PagedList;
-@using PagedList.Mvc;
-@model IPagedList<DemandOrderSystem.Models.ViewModel.TableThreeViewModel>
+﻿@using PagedList
+@using PagedList.Mvc
+@model DemandOrderSystem.Models.ViewModel.TableThreeViewModel
 
 @{
     ViewBag.Title = "已交付UAT但尚未結案之明細表";
@@ -26,13 +26,13 @@
                         <input type="submit" value="查詢" class="btn btn-info" />
                     </div>
                     <div>
-                        @Html.Label("符合條件總數: ") @TempData["TempDataTest"]
+                        @Html.Label("符合條件總數: ") @Html.DisplayFor(Model => Model.Count)
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <div>
-                    @Html.Label("部室選擇: ") @Html.DropDownList("applyDept", null, "", new { @class = "form-control" })
+                    @Html.Label("部室選擇: ") @Html.DropDownList("applicant_department_list", null, "", new { @class = "form-control" })
                 </div>
                 <div>
                     @Html.Label("需求單號查詢: ") @Html.TextBox("orderID", "", new { @class = "form-control" })
@@ -49,30 +49,30 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().ApplyDept)
+            @Html.DisplayNameFor(model => model.TableThree.FirstOrDefault().ApplyDept)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Applicant)
+            @Html.DisplayNameFor(model => model.TableThree.FirstOrDefault().Applicant)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().DemandDutyPerson)
+            @Html.DisplayNameFor(model => model.TableThree.FirstOrDefault().DemandDutyPerson)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().AcceptionTestStartDate)
+            @Html.DisplayNameFor(model => model.TableThree.FirstOrDefault().AcceptionTestStartDate)
         </th>
         @*<th>
                 @Html.DisplayNameFor(model => model.驗收結束日)
             </th>*@
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().OrderID)
+            @Html.DisplayNameFor(model => model.TableThree.FirstOrDefault().OrderID)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().OrderName)
+            @Html.DisplayNameFor(model => model.TableThree.FirstOrDefault().OrderName)
         </th>
         <th></th>
     </tr>
 
-    @foreach (var item in Model)
+    @foreach (var item in Model.TableThree)
     {
         <tr>
             <td>
@@ -105,10 +105,10 @@
 </table>
 
 <form method="get">
-    @Html.PagedListPager((IPagedList)Model, page => Url.Action("TableThree", new { page })
+    @Html.PagedListPager((IPagedList)Model.TableThree, page => Url.Action("TableThree", new { page })
 //+ "&orderState=" + Request.Params["orderState"]
 + "&acceptionTestStartDate_0=" + Request.Params["acceptionTestStartDate_0"]
 + "&acceptionTestStartDate_1=" + Request.Params["acceptionTestStartDate_1"]
-+ "&applyDept=" + Request.Params["applyDept"]
++ "&applicant_department_list=" + Request.Params["applicant_department_list"]
 + "&orderID=" + Request.Params["orderID"])
 </form>

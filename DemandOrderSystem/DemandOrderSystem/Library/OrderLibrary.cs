@@ -148,17 +148,20 @@ namespace DemandOrderSystem.Library
         /// <param name="acceptionTestStartDate_0">驗收開始日_範圍起</param>
         /// <param name="acceptionTestStartDate_1">驗收開始日_範圍結</param>
         /// <param name="applyDept">申請人部室</param>
+        /// <param name="orderID">需求單號</param>
+        /// <param name="currentPage">頁面號碼</param>
         /// <returns></returns>
-        public List<TableThreeViewModel> GetTableThreeViewModel(string orderState, string acceptionTestStartDate_0, string acceptionTestStartDate_1, string applyDept, string orderID)
+        public TableThreeViewModel GetTableThreeViewModel(string orderState, string acceptionTestStartDate_0, string acceptionTestStartDate_1, string applyDept, string orderID, int currentPage)
         {
 
             try
             {
+                TableThreeViewModel tableThreeViewModel = new TableThreeViewModel();
+
                 if (string.IsNullOrWhiteSpace(acceptionTestStartDate_1))
                 {
                     acceptionTestStartDate_1 = DateTime.Now.Date.ToString();
                 }
-
 
                 var Table = (from odt in getOrderDatas()
                              where (!string.IsNullOrWhiteSpace(orderState) ? odt.State == orderState : true)
@@ -166,7 +169,7 @@ namespace DemandOrderSystem.Library
                              & (!string.IsNullOrWhiteSpace(orderID) ? odt.OrderID == orderID : true)
                              & (!string.IsNullOrWhiteSpace(acceptionTestStartDate_0) ? odt.AcceptionTestStartDate >= Convert.ToDateTime(acceptionTestStartDate_0) : true)
                              & (!string.IsNullOrWhiteSpace(acceptionTestStartDate_1) ? odt.AcceptionTestStartDate <= Convert.ToDateTime(acceptionTestStartDate_1) : true)
-                             select new TableThreeViewModel
+                             select new TableThree
                              {
                                  OrderID = odt.OrderID,
                                  OrderName = odt.OrderName,
@@ -175,9 +178,12 @@ namespace DemandOrderSystem.Library
                                  DemandDutyPerson = odt.DemandDutyPerson,
                                  AcceptionTestStartDate = odt.AcceptionTestStartDate
                              }).ToList();
-                
 
-                return Table;
+                tableThreeViewModel.TableThree = Table.ToPagedList(currentPage, 20);
+                tableThreeViewModel.applicant_department_list = Table.GroupBy(x => x.ApplyDept).Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() }).Distinct().ToList();
+                tableThreeViewModel.Count = Table.Count().ToString();
+
+                return tableThreeViewModel;
             }
             catch (Exception)
             {
@@ -389,16 +395,22 @@ namespace DemandOrderSystem.Library
         /// <param name="dischargeDate">撤件日期</param>
         /// <param name="applyDept">申請部室</param>
         /// <returns></returns>
-        public List<TableSevenViewModel> GetTableSevenViewModel(string orderID, string applyDept, string caseCloseDate, string dischargeDate)
+        public TableSevenViewModel GetTableSevenViewModel(string orderID, string applyDept, string caseCloseDate, string dischargeDate, int currentPage)
         {
+            TableSevenViewModel tableSevenViewModel = new TableSevenViewModel();
 
             var resule = (from dt in dBService.getSevenTable(Convert.ToDateTime(!string.IsNullOrWhiteSpace(caseCloseDate) ? caseCloseDate : caseCloseDate = "2010-01-01")
                           , Convert.ToDateTime(!string.IsNullOrWhiteSpace(dischargeDate) ? dischargeDate : dischargeDate = "2010-01-01")).AsEnumerable()
                           where (!string.IsNullOrWhiteSpace(orderID) ? dt.OrderID == orderID : true)
                           & (!string.IsNullOrWhiteSpace(applyDept) ? dt.ApplyDept == applyDept : true)
                           select dt).ToList();
+            
+            tableSevenViewModel.TableSeven = resule.ToPagedList(currentPage, 20);
+            tableSevenViewModel.applicant_department_list = resule.GroupBy(x => x.ApplyDept).Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() }).Distinct().ToList();
+            tableSevenViewModel.Count = resule.Count().ToString();
 
-            return resule;
+
+            return tableSevenViewModel;
 
         }
 
@@ -411,11 +423,13 @@ namespace DemandOrderSystem.Library
         /// <param name="acceptionTestFinishDate_0">驗收結束日_範圍起</param>
         /// <param name="acceptionTestFinishDate_1">驗收結束日_範圍結</param>
         /// <returns></returns>
-        public List<TableEightViewModel> GetTableEightViewModel(string orderID, string orderState, string maintainITDept,  string acceptionTestFinishDate_0, string acceptionTestFinishDate_1)
+        public TableEightViewModel GetTableEightViewModel(string orderID, string orderState, string maintainITDept,  string acceptionTestFinishDate_0, string acceptionTestFinishDate_1, int currentPage)
         {
 
             try
             {
+                TableEightViewModel tableEightViewModel = new TableEightViewModel();
+
                 if (string.IsNullOrWhiteSpace(acceptionTestFinishDate_1))
                 {
                     acceptionTestFinishDate_1 = DateTime.Now.Date.ToString();
@@ -428,7 +442,7 @@ namespace DemandOrderSystem.Library
                              & (!string.IsNullOrWhiteSpace(maintainITDept) ? odt.MaintainITDept == maintainITDept : true)
                              & (!string.IsNullOrWhiteSpace(acceptionTestFinishDate_0) ? odt.AcceptionTestFinishDate >= Convert.ToDateTime(acceptionTestFinishDate_0) : true)
                              & (!string.IsNullOrWhiteSpace(acceptionTestFinishDate_1) ? odt.AcceptionTestFinishDate <= Convert.ToDateTime(acceptionTestFinishDate_1) : true)
-                             select new TableEightViewModel
+                             select new TableEight
                              {
                                  MaintainITDept = odt.MaintainITDept,
                                  MaintainITSec = odt.MaintainITSec,
@@ -439,8 +453,11 @@ namespace DemandOrderSystem.Library
                                  AcceptionTestFinishDate = odt.AcceptionTestFinishDate
                              }).ToList();
 
+                tableEightViewModel.TableEight = Table.ToPagedList(currentPage, 20);
+                tableEightViewModel.maintainITDept_list = Table.Where(x => x.MaintainITDept != null).GroupBy(x => x.MaintainITDept).Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() }).Distinct().ToList();
+                tableEightViewModel.Count = Table.Count().ToString();
 
-                return Table;
+                return tableEightViewModel;
             }
             catch (Exception)
             {

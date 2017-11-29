@@ -1,11 +1,34 @@
-﻿using System;
+﻿using PagedList;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace DemandOrderSystem.Models.ViewModel
 {
     public class TableSevenViewModel
+    {
+
+        /// <summary>
+        /// 申請人部室選擇
+        /// </summary>
+        public List<SelectListItem> applicant_department_list { get; set; }
+
+        /// <summary>
+        /// TableThree細項
+        /// </summary>
+        public IPagedList<TableSeven> TableSeven { get; set; }
+
+        /// <summary>
+        /// 總數量
+        /// </summary>
+        public string Count { get; set; }
+
+    }
+
+
+    public class TableSeven
     {
         /// <summary>
         /// 需求單號

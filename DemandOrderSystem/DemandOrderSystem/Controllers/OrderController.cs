@@ -81,17 +81,13 @@ namespace DemandOrderSystem.Controllers
         /// <param name="orderID">需求單號</param>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult TableThree(int? page, string orderState, string acceptionTestStartDate_0, string acceptionTestStartDate_1, string applyDept, string orderID)
+        public ActionResult TableThree( string acceptionTestStartDate_0, string acceptionTestStartDate_1, string applicant_department_list, string orderID, string orderState = "驗收", int page = 1)
         {
 
-            List<TableThreeViewModel> _Table = new List<TableThreeViewModel>();
+            int currentPage = page < 1 ? 1 : page;
+            var _Table = dbLibrary.GetTableThreeViewModel(orderState, acceptionTestStartDate_0, acceptionTestStartDate_1, applicant_department_list, orderID, currentPage);
 
-            _Table = dbLibrary.GetTableThreeViewModel(orderState = "驗收", acceptionTestStartDate_0, acceptionTestStartDate_1, applyDept, orderID);
-            var item = _Table.GroupBy(x => x.ApplyDept).Distinct().ToList();
-            ViewBag.applyDept = item.Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() });
-            TempData["TempDataTest"] = _Table.Count.ToString();
-
-            return View(_Table.ToPagedList(page ?? 1, 20));
+            return View(_Table);
         }
         
         /// <summary>
@@ -148,21 +144,17 @@ namespace DemandOrderSystem.Controllers
         /// <param name="page">頁碼</param>
         /// <param name="caseCloseDate">結案日</param>
         /// <param name="dischargeDate">撤件日期</param>
-        /// <param name="applyDept">申請部室</param>
+        /// <param name="applicant_department_list">申請部室</param>
         /// <param name="orderID">需求單號</param>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult TableSeven(int? page, string caseCloseDate, string dischargeDate, string applyDept, string orderID)
+        public ActionResult TableSeven( string caseCloseDate, string dischargeDate, string applicant_department_list, string orderID, int page = 1)
         {
 
-            List<TableSevenViewModel> _Table = new List<TableSevenViewModel>();
+            int currentPage = page < 1 ? 1 : page;
+            var _Table = dbLibrary.GetTableSevenViewModel(orderID, applicant_department_list,caseCloseDate, dischargeDate, currentPage);
 
-            _Table = dbLibrary.GetTableSevenViewModel(orderID, applyDept,caseCloseDate, dischargeDate);
-            var item = _Table.GroupBy(x => x.ApplyDept).Distinct().ToList();
-            ViewBag.applyDept = item.Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() });
-            TempData["TempDataTest"] = _Table.Count.ToString();
-
-            return View(_Table.ToPagedList(page ?? 1, 20));
+            return View(_Table);
         }
 
         /// <summary>
@@ -172,22 +164,17 @@ namespace DemandOrderSystem.Controllers
         /// <param name="orderState">需求單狀態</param>
         /// <param name="acceptionTestFinishDate_0">驗收結束日_範圍起</param>
         /// <param name="acceptionTestFinishDate_1">驗收結束日_範圍結</param>
-        /// <param name="maintainITDept">維護資訊室</param>
+        /// <param name="maintainITDept_list">維護資訊室</param>
         /// <param name="orderID">需求單號</param>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult TableEight(int? page, string orderState, string acceptionTestFinishDate_0, string acceptionTestFinishDate_1, string maintainITDept, string orderID)
+        public ActionResult TableEight(string acceptionTestFinishDate_0, string acceptionTestFinishDate_1, string maintainITDept_list, string orderID, string orderState = "驗收", int page = 1)
         {
 
-            List<TableEightViewModel> _Table = new List<TableEightViewModel>();
-            
-            _Table = dbLibrary.GetTableEightViewModel(orderID,orderState, maintainITDept, acceptionTestFinishDate_0, acceptionTestFinishDate_1);
-            TempData["TempDataTest"] = _Table.Count.ToString();
-            var item = _Table.Where(x => x.MaintainITDept != null).GroupBy(x => x.MaintainITDept).Distinct().ToList();
-            ViewBag.maintainITDept = item.Select(x => new SelectListItem() { Text = x.Key.ToString(), Value = x.Key.ToString() });
+            int currentPage = page < 1 ? 1 : page;
+            var _Table = dbLibrary.GetTableEightViewModel(orderID,orderState, maintainITDept_list, acceptionTestFinishDate_0, acceptionTestFinishDate_1, page);
 
-
-            return View(_Table.ToPagedList(page ?? 1, 20));
+            return View(_Table);
         }
 
         public ActionResult TableTwo(int page = 1)

@@ -1,11 +1,32 @@
-﻿using System;
+﻿using PagedList;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace DemandOrderSystem.Models.ViewModel
 {
     public class TableEightViewModel
+    {
+        /// <summary>
+        /// 申請人部室選擇
+        /// </summary>
+        public List<SelectListItem> maintainITDept_list { get; set; }
+
+        /// <summary>
+        /// TableThree細項
+        /// </summary>
+        public IPagedList<TableEight> TableEight { get; set; }
+
+        /// <summary>
+        /// 總數量
+        /// </summary>
+        public string Count { get; set; }
+    }
+    
+
+    public class TableEight
     {
         /// <summary>
         /// 需求單號
