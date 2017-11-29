@@ -10,8 +10,9 @@
 
 @{
     List<SelectListItem> items = new List<SelectListItem>{
-                new SelectListItem {Text = "結案", Value = "結案"},
-                new SelectListItem {Text = "驗收", Value = "驗收", Selected = true}
+                new SelectListItem {Text = "請選擇", Value = "" },
+                new SelectListItem {Text = "驗收", Value = "驗收", Selected = true},
+                new SelectListItem {Text = "結案", Value = "結案"}
     };
 }
 
@@ -46,10 +47,10 @@
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <div>
                     <div>
-                        @Html.Label("資訊室: ") @Html.DropDownList("maintainITDept_list", null, "", new { @class = "form-control" })
+                        @Html.Label("資訊室: ") @Html.DropDownList("maintainITDept_list", null, "請選擇", new { @class = "form-control" })
                     </div>
                     <div>
-                        @Html.Label("狀態: ") @Html.DropDownList("orderState", items, "", new { @class = "form-control" })
+                        @Html.Label("狀態: ") @Html.DropDownList("orderState", items, new { @class = "form-control" })
                     </div>
                 </div>
             </div>
