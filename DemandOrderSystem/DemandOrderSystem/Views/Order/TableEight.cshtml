@@ -1,6 +1,6 @@
-﻿@using PagedList;
-@using PagedList.Mvc;
-@model IPagedList<DemandOrderSystem.Models.ViewModel.TableEightViewModel>
+﻿@using PagedList
+@using PagedList.Mvc
+@model DemandOrderSystem.Models.ViewModel.TableEightViewModel
 
 @{
     ViewBag.Title = "已完成驗收但尚未結案";
@@ -25,38 +25,32 @@
                     <div class="form-group">
                         @Html.Label("驗收結束日期大於: ")
                         <div>
-                            @Html.TextBox("acceptionTestFinishDate_0", "2013-01-01", new { @class = "form-control", @type = "date" })
+                            @Html.TextBox("acceptionTestFinishDate_0", "", new { @class = "form-control", @type = "date" })
                         </div>
                         @Html.Label("驗收結束日期小於: ")
                         <div>
-                            @Html.TextBox("acceptionTestFinishDate_1", "2017-12-31", new { @class = "form-control", @type = "date" })
+                            @Html.TextBox("acceptionTestFinishDate_1", "", new { @class = "form-control", @type = "date" })
                         </div>
-
                         @Html.Label("需求單號查詢: ")
                         <div>
                             @Html.TextBox("orderID", "", new { @class = "form-control" })
                         </div>
                         <br />
                         <input type="submit" value="查詢" class="btn btn-info" />
-                    </div><div>
-                        @Html.Label("符合條件總數: ") @TempData["TempDataTest"]
+                    </div>
+                    <div>
+                        @Html.Label("符合條件總數: ") @Html.DisplayFor(Model => Model.Count)
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <div>
                     <div>
-                        @Html.Label("資訊室: ") @Html.DropDownList("maintainITDept", null, "", new { @class = "form-control" })
+                        @Html.Label("資訊室: ") @Html.DropDownList("maintainITDept_list", null, "", new { @class = "form-control" })
                     </div>
                     <div>
                         @Html.Label("狀態: ") @Html.DropDownList("orderState", items, "", new { @class = "form-control" })
                     </div>
-                    @*@Html.Label("Order By: ")
-                    <div>
-                        @Html.RadioButton("orderby", "Information_Room") @Html.Label("資訊室")
-                        @Html.RadioButton("orderby", "OrderID") @Html.Label("需求單號")
-                        @Html.RadioButton("orderby", "Date") @Html.Label("驗收結束日")
-                    </div>*@
                 </div>
             </div>
         }
@@ -67,30 +61,30 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().MaintainITDept)
+            @Html.DisplayNameFor(model => model.TableEight.FirstOrDefault().MaintainITDept)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().MaintainITSec)
+            @Html.DisplayNameFor(model => model.TableEight.FirstOrDefault().MaintainITSec)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().DemandDutyPerson)
+            @Html.DisplayNameFor(model => model.TableEight.FirstOrDefault().DemandDutyPerson)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().OrderID)
+            @Html.DisplayNameFor(model => model.TableEight.FirstOrDefault().OrderID)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().OrderName)
+            @Html.DisplayNameFor(model => model.TableEight.FirstOrDefault().OrderName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().State)
+            @Html.DisplayNameFor(model => model.TableEight.FirstOrDefault().State)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().AcceptionTestFinishDate)
+            @Html.DisplayNameFor(model => model.TableEight.FirstOrDefault().AcceptionTestFinishDate)
         </th>
         <th></th>
     </tr>
 
-    @foreach (var item in Model)
+    @foreach (var item in Model.TableEight)
     {
         <tr>
             <td>
@@ -123,11 +117,10 @@
 </table>
 
 <form method="get">
-    @Html.PagedListPager((IPagedList)Model, page => Url.Action("TableEight", new { page })
+    @Html.PagedListPager((IPagedList)Model.TableEight, page => Url.Action("TableEight", new { page })
 + "&acceptionTestFinishDate_0=" + Request.Params["acceptionTestFinishDate_0"]
 + "&acceptionTestFinishDate_1=" + Request.Params["acceptionTestFinishDate_1"]
 + "&orderState=" + Request.Params["orderState"]
-+ "&maintainITDept=" + Request.Params["maintainITDept"]
-+ "&orderID=" + Request.Params["orderID"]
-+ "&orderby=" + Request.Params["orderby"])
++ "&maintainITDept_list=" + Request.Params["maintainITDept_list"]
++ "&orderID=" + Request.Params["orderID"])
 </form>

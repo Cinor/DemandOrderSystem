@@ -50,55 +50,55 @@ namespace DemandOrderSystem.Service
 
 
             IQueryable<Order> queryable = from REQ in _db.Request
-                                                   join p in _db.Project on REQ.MAProjectID equals p.PrjID into REQ2
-                                                   from p in REQ2.DefaultIfEmpty()
-                                                   join app in _db.ApplicantInfo on REQ.ReqID equals app.ReqID into REQ3
-                                                   from app in REQ3.DefaultIfEmpty()
-                                                   join rt in _db.RequestType on REQ.AcceptType equals rt.TypeSN into REQ4
-                                                   from rt in REQ4.DefaultIfEmpty()
-                                                   join vREQ in viewREQ on REQ.ReqID equals vREQ.ReqID into REQ5
-                                                   from vREQ in REQ5.DefaultIfEmpty()
-                                                   where REQ.EstimateAcceptDate.HasValue && string.Compare(REQ.ReqID, "RE200900000") > 0 && (REQ.ReqStatus.Substring(0, 1) == "3"
-                                                   || (new string[] { "4", "5", "7" }).Contains(REQ.ReqStatus)) && REQ.FormType == "1"
-                                                   && REQ.ITDept != "11J000" && !not_in.Contains(REQ.ReqID)
-                                                   orderby app.DeptChiName, app.UnitChiName, app.EmpChiName
-                                                   select new Order()
-                                                   {
-                                                       ApplyDept = app.DeptChiName,
-                                                       ApplySec = app.UnitChiName,
-                                                       Applicant = app.EmpChiName,
-                                                       OrderID = REQ.ReqID,
-                                                       OrderName = REQ.ReqSubject,
-                                                       ITDept =
-                                                       (
-                                                          REQ.ITDept == "106000" ? "壽險資訊部" :
-                                                          REQ.ITDept == "12D000" ? "投資資訊部" :
-                                                          REQ.ITDept == "11L000" ? "數位資訊部" :
-                                                          REQ.ITDept == "13D000" ? "資訊規劃部" :
-                                                          REQ.ITDept == "11J000" ? "資訊系統部" : ""
+                                          join p in _db.Project on REQ.MAProjectID equals p.PrjID into REQ2
+                                          from p in REQ2.DefaultIfEmpty()
+                                          join app in _db.ApplicantInfo on REQ.ReqID equals app.ReqID into REQ3
+                                          from app in REQ3.DefaultIfEmpty()
+                                          join rt in _db.RequestType on REQ.AcceptType equals rt.TypeSN into REQ4
+                                          from rt in REQ4.DefaultIfEmpty()
+                                          join vREQ in viewREQ on REQ.ReqID equals vREQ.ReqID into REQ5
+                                          from vREQ in REQ5.DefaultIfEmpty()
+                                          where REQ.EstimateAcceptDate.HasValue && string.Compare(REQ.ReqID, "RE200900000") > 0 && (REQ.ReqStatus.Substring(0, 1) == "3"
+                                          || (new string[] { "4", "5", "7" }).Contains(REQ.ReqStatus)) && REQ.FormType == "1"
+                                          && REQ.ITDept != "11J000" && !not_in.Contains(REQ.ReqID)
+                                          orderby app.DeptChiName, app.UnitChiName, app.EmpChiName
+                                          select new Order()
+                                          {
+                                              ApplyDept = app.DeptChiName,
+                                              ApplySec = app.UnitChiName,
+                                              Applicant = app.EmpChiName,
+                                              OrderID = REQ.ReqID,
+                                              OrderName = REQ.ReqSubject,
+                                              ITDept =
+                                              (
+                                                 REQ.ITDept == "106000" ? "壽險資訊部" :
+                                                 REQ.ITDept == "12D000" ? "投資資訊部" :
+                                                 REQ.ITDept == "11L000" ? "數位資訊部" :
+                                                 REQ.ITDept == "13D000" ? "資訊規劃部" :
+                                                 REQ.ITDept == "11J000" ? "資訊系統部" : ""
 
-                                                       ),
-                                                       State =
-                                                       (
-                                                          (DbFunctions.Left(REQ.ReqStatus, 1)) == "5" ? "結案" :
-                                                          (DbFunctions.Left(REQ.ReqStatus, 1)) == "3" ? "受理" :
-                                                          (DbFunctions.Left(REQ.ReqStatus, 1)) == "4" ? "驗收" :
-                                                          (DbFunctions.Left(REQ.ReqStatus, 1)) == "7" ? "收件完成" : ""
-                                                       ),
-                                                       ExpectCompleteDate = REQ.ExpectedFinishedDate,
-                                                       ExpectRecieveDate = REQ.EstimateAcceptDate,
-                                                       ExpectStartDate = REQ.PlannedStartDate,
-                                                       ExpectFinishDate = REQ.PlannedEndDate,
-                                                       AcceptionTestStartDate = REQ.AcceptStartDate,
-                                                       AcceptionTestFinishDate = REQ.AcceptEndDate,
-                                                       CaseCloseDate = REQ.ReqCloseDate,
-                                                       MaintainLine = p.PrjName,
-                                                       MaintainITDept = vREQ.DeptChiName,
-                                                       MaintainITSec = vREQ.UnitChiName,
-                                                       DemandDutyPerson = vREQ.EmpChiName,
-                                                       ClassNo = rt.TypeID,
-                                                       ClassName = rt.TypeLable
-                                                   };
+                                              ),
+                                              State =
+                                              (
+                                                 (DbFunctions.Left(REQ.ReqStatus, 1)) == "5" ? "結案" :
+                                                 (DbFunctions.Left(REQ.ReqStatus, 1)) == "3" ? "受理" :
+                                                 (DbFunctions.Left(REQ.ReqStatus, 1)) == "4" ? "驗收" :
+                                                 (DbFunctions.Left(REQ.ReqStatus, 1)) == "7" ? "收件完成" : ""
+                                              ),
+                                              ExpectCompleteDate = REQ.ExpectedFinishedDate,
+                                              ExpectRecieveDate = REQ.EstimateAcceptDate,
+                                              ExpectStartDate = REQ.PlannedStartDate,
+                                              ExpectFinishDate = REQ.PlannedEndDate,
+                                              AcceptionTestStartDate = REQ.AcceptStartDate,
+                                              AcceptionTestFinishDate = REQ.AcceptEndDate,
+                                              CaseCloseDate = REQ.ReqCloseDate,
+                                              MaintainLine = p.PrjName,
+                                              MaintainITDept = vREQ.DeptChiName,
+                                              MaintainITSec = vREQ.UnitChiName,
+                                              DemandDutyPerson = vREQ.EmpChiName,
+                                              ClassNo = rt.TypeID,
+                                              ClassName = rt.TypeLable
+                                          };
 
 
 
@@ -195,11 +195,12 @@ namespace DemandOrderSystem.Service
                                               };
 
 
-                var resultOrder =  queryable.SingleOrDefault(model => string.Compare(model.OrderID, orderId) == 0);
+                var resultOrder = queryable.SingleOrDefault(model => string.Compare(model.OrderID, orderId) == 0);
 
                 return resultOrder;
             }
         }
+
 
         /// <summary>
         /// 取得需求單7號之細節項目細節
@@ -207,36 +208,87 @@ namespace DemandOrderSystem.Service
         /// <param name="caseCloseDate">結案日(EX: "2017-10-20")</param>
         /// <param name="dischargeDate">撤件日期(EX: "2017-10-20")</param>
         /// <returns></returns>
-        public DataTable getSevenTable(string caseCloseDate, string dischargeDate)
+        public IQueryable<TableSeven> getSevenTable(DateTime caseCloseDate, DateTime dischargeDate)
         {
 
-            SqlConnection _conn = new SqlConnection(ConfigurationManager.ConnectionStrings["RequireSystemConnectionStrings"].ToString());
+            RequireSystemEntities _db = new RequireSystemEntities();
 
-            DataTable dt = new DataTable();
+            string[] get_in = { "12D000", "13D000", "106000", "11L000" };
 
-            using (_conn)
-            {
+            string[] not_in = { "蔡嘉媛", "陳芳珠" };
 
-                var sqlString =
-                "SELECT ApplicantInfo.DeptChiName AS 申請部室,  ApplicantInfo.UnitChiName AS 申請課別, ApplicantInfo.EmpChiName AS 申請人, " +
-                "REQ.ReqID AS 需求單號, REQ.ReqSubject AS 需求單主旨,  REQ.ReqCancelDate AS 撤件日期 " +
-                "FROM RequireSystem.dbo.Request REQ " +
-                "LEFT JOIN Project ON REQ.MAProjectID = Project.PrjID " +
-                "LEFT JOIN ApplicantInfo ON REQ.ReqID = ApplicantInfo.ReqID " +
-                "WHERE REQ.ReqID > 'RE200900000' AND " +
-                "(REQ.ReqStatus = '10' AND(REQ.ReqCloseDate > '" + caseCloseDate + "' OR REQ.ReqCancelDate > '" + dischargeDate + "')) AND ReqCloseDes NOT LIKE '未符合103/2/5起之申請流程%' " +
-                "AND REQ.FormType = '1' AND REQ.ITDept IN('12D000','13D000','106000','11L000') AND ApplicantInfo.EmpChiName NOT IN('蔡嘉媛', '陳芳珠') " +
-                "ORDER BY ApplicantInfo.DeptChiName,  ApplicantInfo.UnitChiName";
+            IQueryable<TableSeven> viewREQ = from REQ in _db.Request
+                                             join Pj in _db.Project on REQ.MAProjectID equals Pj.PrjID into REQ2
+                                             from Pj in REQ2.DefaultIfEmpty()
+                                             join App in _db.ApplicantInfo on REQ.ReqID equals App.ReqID into REQ3
+                                             from App in REQ3.DefaultIfEmpty()
+                                             where string.Compare(REQ.ReqID, "RE200900000") > 0 && (REQ.ReqStatus == "10" && (REQ.ReqCloseDate > caseCloseDate || REQ.ReqCancelDate > dischargeDate))
+                                             && !REQ.ReqCloseDes.StartsWith("未符合103/2/5起之申請流程") && REQ.FormType == "1" && get_in.Contains(REQ.ITDept) && !not_in.Contains(App.EmpChiName)
+                                             orderby App.DeptChiName, App.UnitChiName
+                                             select new TableSeven()
+                                             {
+                                                 ApplyDept = App.DeptChiName,
+                                                 ApplySec = App.UnitChiName,
+                                                 Applicant = App.EmpChiName,
+                                                 OrderID = REQ.ReqID,
+                                                 OrderName = REQ.ReqSubject,
+                                                 DischargeDate = REQ.ReqCancelDate
+                                             };
 
+            return viewREQ;
 
-                SqlCommand cmd = new SqlCommand(sqlString, _conn);
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-
-                da.Fill(dt);
-            }
-
-            return dt;
         }
+
+
+        ///// <summary>
+        ///// 取得需求單7號之細節項目細節
+        ///// </summary>
+        ///// <param name="caseCloseDate">結案日(EX: "2017-10-20")</param>
+        ///// <param name="dischargeDate">撤件日期(EX: "2017-10-20")</param>
+        ///// <returns></returns>
+        //public IEnumerable<TableSevenViewModel> getSevenTable(string caseCloseDate, string dischargeDate)
+        //{
+
+        //    SqlConnection _conn = new SqlConnection(ConfigurationManager.ConnectionStrings["RequireSystemConnectionStrings"].ToString());
+
+        //    DataTable dt = new DataTable();
+
+        //    using (_conn)
+        //    {
+
+        //        var sqlString =
+        //        "SELECT ApplicantInfo.DeptChiName AS 申請部室,  ApplicantInfo.UnitChiName AS 申請課別, ApplicantInfo.EmpChiName AS 申請人, " +
+        //        "REQ.ReqID AS 需求單號, REQ.ReqSubject AS 需求單主旨,  REQ.ReqCancelDate AS 撤件日期 " +
+        //        "FROM RequireSystem.dbo.Request REQ " +
+        //        "LEFT JOIN Project ON REQ.MAProjectID = Project.PrjID " +
+        //        "LEFT JOIN ApplicantInfo ON REQ.ReqID = ApplicantInfo.ReqID " +
+        //        "WHERE REQ.ReqID > 'RE200900000' AND " +
+        //        "(REQ.ReqStatus = '10' AND(REQ.ReqCloseDate > '" + caseCloseDate + "' OR REQ.ReqCancelDate > '" + dischargeDate + "')) AND ReqCloseDes NOT LIKE '未符合103/2/5起之申請流程%' " +
+        //        "AND REQ.FormType = '1' AND REQ.ITDept IN('12D000','13D000','106000','11L000') AND ApplicantInfo.EmpChiName NOT IN('蔡嘉媛', '陳芳珠') " +
+        //        "ORDER BY ApplicantInfo.DeptChiName,  ApplicantInfo.UnitChiName";
+
+
+        //        SqlCommand cmd = new SqlCommand(sqlString, _conn);
+        //        SqlDataAdapter da = new SqlDataAdapter(cmd);
+
+        //        da.Fill(dt);
+        //    }
+
+        //    var _resultList = (from dtl in dt.AsEnumerable()
+        //                       select new TableSevenViewModel
+        //                       {
+        //                           OrderID = dtl.Field<string>("需求單號"),
+        //                           ApplyDept = dtl.Field<string>("申請部室"),
+        //                           ApplySec = dtl.Field<string>("申請課別"),
+        //                           Applicant = dtl.Field<string>("申請人"),
+        //                           OrderName = dtl.Field<string>("需求單主旨"),
+        //                           DischargeDate = dtl.Field<DateTime?>("撤件日期")
+        //                       }).ToList();
+
+
+
+        //    return _resultList;
+        //}
 
     }
 }

@@ -1,6 +1,6 @@
-﻿@using PagedList;
-@using PagedList.Mvc;
-@model IPagedList<DemandOrderSystem.Models.ViewModel.TableThreeViewModel>
+﻿@using PagedList
+@using PagedList.Mvc
+@model DemandOrderSystem.Models.ViewModel.TableThreeViewModel
 
 @{
     ViewBag.Title = "已交付UAT但尚未結案之明細表";
@@ -8,67 +8,39 @@
 
 <h2>已交付UAT但尚未結案之明細表</h2>
 
-@{
-    List<SelectListItem> items = new List<SelectListItem>{
-                new SelectListItem {Text = "收件完成", Value = "收件完成"},
-                new SelectListItem {Text = "受理", Value = "受理"} ,
-                new SelectListItem {Text = "結案", Value = "結案"},
-                new SelectListItem {Text = "驗收", Value = "驗收", Selected = true}
-    };
-
-}
 
 <p>
     <div class="row">
         @using (Html.BeginForm("TableThree", "Order", FormMethod.Get))
         {
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                <div >
+                <div>
                     <div class="form-group">
-                        
-                        @Html.Label("驗收起始日大於: ")
                         <div>
-                            @Html.TextBox("acceptionTestStartDate_0", "2012-12-31", new { @class = "form-control", type = "date" })
+                            @Html.Label("驗收起始日大於: ") @Html.TextBox("acceptionTestStartDate_0", "", new { @class = "form-control", type = "date" })
                         </div>
-
-                        @Html.Label("驗收起始日小於: ")
                         <div>
-                            @Html.TextBox("acceptionTestStartDate_1", "2017-12-31", new { @class = "form-control", type = "date" })
-                        </div>
-                        @Html.Label("需求單號查詢: ")
-                        <div>
-                            @Html.TextBox("orderID", "", new { @class = "form-control" })
-                            <br />
-                            @*@Html.Label("狀態: ") @Html.DropDownList("orderState", items, "", new { @class = "form-control" })*@
+                            @Html.Label("驗收起始日小於: ") @Html.TextBox("acceptionTestStartDate_1", "", new { @class = "form-control", type = "date" })
                         </div>
                         <br />
                         <input type="submit" value="查詢" class="btn btn-info" />
                     </div>
                     <div>
-                        @Html.Label("符合條件總數: ") @TempData["TempDataTest"]
+                        @Html.Label("符合條件總數: ") @Html.DisplayFor(Model => Model.Count)
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                <div >
-                    <div>
-                        @Html.Label("部室選擇: ") @Html.DropDownList("applyDept", null, "", new { @class = "form-control" })
-                    </div>
-                    @*@Html.Label("Order By: ")
-                    <div>
-                        @Html.RadioButton("orderby", "OrderID") @Html.Label("需求單排序")
-                        @Html.RadioButton("orderby", "Date") @Html.Label("驗收起始日排序")
-                        @Html.RadioButton("orderby", "Application_Room") @Html.Label("部室排序")
-                    </div>*@
+                <div>
+                    @Html.Label("部室選擇: ") @Html.DropDownList("applicant_department_list", null, "", new { @class = "form-control" })
                 </div>
+                <div>
+                    @Html.Label("需求單號查詢: ") @Html.TextBox("orderID", "", new { @class = "form-control" })
+                </div>
+                @*<div>
+                    @Html.Label("需求單狀態: ") @Html.DropDownList("orderState", items, "", new { @class = "form-control" })
+                 </div>*@
             </div>
-            @*<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                <div >
-                    <div>
-                        @Html.ActionLink("匯出查詢結果至Excel檔案", "OutExcel", new { type = Request.Params["type"],  Date0=  Request.Params["Date0"] ,date = Request.Params["Date"], Room = Request.Params["Room"] }, new { @class = "btn btn-info", })
-                    </div>
-                </div>
-            </div>*@
         }
     </div>
 </p>
@@ -77,30 +49,30 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().ApplyDept)
+            @Html.DisplayNameFor(model => model.TableThree.FirstOrDefault().ApplyDept)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Applicant)
+            @Html.DisplayNameFor(model => model.TableThree.FirstOrDefault().Applicant)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().DemandDutyPerson)
+            @Html.DisplayNameFor(model => model.TableThree.FirstOrDefault().DemandDutyPerson)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().AcceptionTestStartDate)
+            @Html.DisplayNameFor(model => model.TableThree.FirstOrDefault().AcceptionTestStartDate)
         </th>
         @*<th>
                 @Html.DisplayNameFor(model => model.驗收結束日)
             </th>*@
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().OrderID)
+            @Html.DisplayNameFor(model => model.TableThree.FirstOrDefault().OrderID)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().OrderName)
+            @Html.DisplayNameFor(model => model.TableThree.FirstOrDefault().OrderName)
         </th>
         <th></th>
     </tr>
 
-    @foreach (var item in Model)
+    @foreach (var item in Model.TableThree)
     {
         <tr>
             <td>
@@ -133,11 +105,10 @@
 </table>
 
 <form method="get">
-    @Html.PagedListPager((IPagedList)Model, page => Url.Action("TableThree", new { page })
-+ "&orderState=" + Request.Params["orderState"]
+    @Html.PagedListPager((IPagedList)Model.TableThree, page => Url.Action("TableThree", new { page })
+//+ "&orderState=" + Request.Params["orderState"]
 + "&acceptionTestStartDate_0=" + Request.Params["acceptionTestStartDate_0"]
 + "&acceptionTestStartDate_1=" + Request.Params["acceptionTestStartDate_1"]
-+ "&applyDept=" + Request.Params["applyDept"]
-+ "&orderID=" + Request.Params["orderID"]
-+ "&orderby=" + Request.Params["orderby"])
++ "&applicant_department_list=" + Request.Params["applicant_department_list"]
++ "&orderID=" + Request.Params["orderID"])
 </form>
