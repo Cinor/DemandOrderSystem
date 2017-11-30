@@ -23,7 +23,7 @@
                     <div class="form-group">
                         @Html.Label("撤件日期大於: ")
                         <div>
-                            @Html.TextBox("dischargeDate", "2014-11-30", new { @class = "form-control", type = "date" })
+                            @Html.TextBox("dischargeDate", "", new { @class = "form-control", type = "date" })
                         </div>
                         <br />
                         <input type="submit" value="查詢" class="btn btn-info" />
@@ -37,7 +37,7 @@
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                 <div>
                     <div>
-                        @Html.Label("部室選擇: ") @Html.DropDownList("applicant_department_list", null, "", new { @class = "form-control" })
+                        @Html.Label("部室選擇: ") @Html.DropDownList("applicant_department_list", null, "請選擇", new { @class = "form-control" })
                     </div>
                     <div>
                         @Html.Label("需求單號查詢: ") @Html.TextBox("orderID", "", new { @class = "form-control" })

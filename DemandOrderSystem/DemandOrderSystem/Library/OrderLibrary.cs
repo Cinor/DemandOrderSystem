@@ -395,13 +395,14 @@ namespace DemandOrderSystem.Library
         /// <param name="caseCloseDate">結案日</param>
         /// <param name="dischargeDate">撤件日期</param>
         /// <param name="applyDept">申請部室</param>
+        /// <param name="currentPage">頁碼</param>
         /// <returns></returns>
         public TableSevenViewModel GetTableSevenViewModel(string orderID, string applyDept, string caseCloseDate, string dischargeDate, int currentPage)
         {
             TableSevenViewModel tableSevenViewModel = new TableSevenViewModel();
 
-            var orderDatasList = dBService.getSevenTable(Convert.ToDateTime(!string.IsNullOrWhiteSpace(caseCloseDate) ? caseCloseDate : caseCloseDate = "2010-01-01")
-                          , Convert.ToDateTime(!string.IsNullOrWhiteSpace(dischargeDate) ? dischargeDate : dischargeDate = "2010-01-01")).AsEnumerable();
+            var orderDatasList = dBService.getSevenTable(Convert.ToDateTime(!string.IsNullOrWhiteSpace(caseCloseDate) ? caseCloseDate : caseCloseDate = "2001-01-01")
+                          , Convert.ToDateTime(!string.IsNullOrWhiteSpace(dischargeDate) ? dischargeDate : dischargeDate = "2001-01-01")).AsEnumerable();
             var resule = (from dt in orderDatasList
                           where (!string.IsNullOrWhiteSpace(orderID) ? dt.OrderID == orderID : true)
                           & (!string.IsNullOrWhiteSpace(applyDept) ? dt.ApplyDept == applyDept : true)
@@ -424,6 +425,7 @@ namespace DemandOrderSystem.Library
         /// <param name="maintainITDept">維護資訊室</param>
         /// <param name="acceptionTestFinishDate_0">驗收結束日_範圍起</param>
         /// <param name="acceptionTestFinishDate_1">驗收結束日_範圍結</param>
+        /// <param name="currentPage">頁碼</param>
         /// <returns></returns>
         public TableEightViewModel GetTableEightViewModel(string orderID, string orderState, string maintainITDept,  string acceptionTestFinishDate_0, string acceptionTestFinishDate_1, int currentPage)
         {
