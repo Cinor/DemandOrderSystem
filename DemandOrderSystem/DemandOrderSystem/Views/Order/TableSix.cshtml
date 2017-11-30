@@ -11,17 +11,14 @@
     @using (Html.BeginForm())
     {
         <div class="row">
-            <hr />
-            <dl class="dl-horizontal">
-                <dt>
-                    @Html.Label("預估完成日小於")
-                </dt>
-                <dd>
-                    @Html.TextBox("date", "", new { @class = "form-control", type = "date" })
-                </dd>
-            </dl>
-            <div>
-                <input type="submit" value="查詢" class="btn btn-info" />
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    <div>
+                        @Html.Label("預估完成日小於") @Html.TextBox("date", "", new { @class = "form-control", type = "date" })
+                    </div>
+                    <br />
+                    <input type="submit" value="查詢" class="btn btn-info" />
+                </div>
             </div>
         </div>
     }
@@ -77,8 +74,7 @@
             <td>
                 總計
             </td>
-            <td>
-            </td>
+            <td></td>
             <td>
                 @Model.Sum_Accepted
             </td>
@@ -98,5 +94,5 @@
 
     <p>
         @*@Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-        @Html.ActionLink("Back to List", "Index")*@
+            @Html.ActionLink("Back to List", "Index")*@
     </p>
