@@ -167,10 +167,8 @@ namespace DemandOrderSystem.Controllers
         /// <param name="maintainITDept_list">維護資訊室</param>
         /// <param name="orderID">需求單號</param>
         /// <returns></returns>
-        [HttpGet]
         public ActionResult TableEight(string acceptionTestFinishDate_0, string acceptionTestFinishDate_1, string maintainITDept_list, string orderID, string orderState = "驗收", int page = 1)
         {
-
             int currentPage = page < 1 ? 1 : page;
             var _Table = dbLibrary.GetTableEightViewModel(orderID, orderState, maintainITDept_list, acceptionTestFinishDate_0, acceptionTestFinishDate_1, page);
 

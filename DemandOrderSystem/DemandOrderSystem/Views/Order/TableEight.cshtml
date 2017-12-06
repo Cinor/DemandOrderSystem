@@ -10,7 +10,6 @@
 
 @{
     List<SelectListItem> items = new List<SelectListItem>{
-                new SelectListItem {Text = "請選擇", Value = "" },
                 new SelectListItem {Text = "驗收", Value = "驗收", Selected = true},
                 new SelectListItem {Text = "結案", Value = "結案"}
     };
@@ -18,7 +17,7 @@
 
 <p>
     <div class="row">
-        @using (Html.BeginForm("TableEight", "Order", FormMethod.Get))
+        @using (Html.BeginForm("TableEight", "Order"))
         {
 
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
@@ -117,11 +116,11 @@
 
 </table>
 
-<form method="get">
-    @Html.PagedListPager((IPagedList)Model.TableEight, page => Url.Action("TableEight", new { page })
+<form>
+    @Html.PagedListPager((IPagedList)Model.TableEight, page => Url.Action("TableEight", new { page , orderState = Request.Params["orderState"] })
 + "&acceptionTestFinishDate_0=" + Request.Params["acceptionTestFinishDate_0"]
 + "&acceptionTestFinishDate_1=" + Request.Params["acceptionTestFinishDate_1"]
-+ "&orderState=" + Request.Params["orderState"]
+//+ "&orderState=" + Request.Params["orderState"]
 + "&maintainITDept_list=" + Request.Params["maintainITDept_list"]
 + "&orderID=" + Request.Params["orderID"])
 </form>
